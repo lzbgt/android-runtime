@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +47,6 @@ public class Generator {
         this.classes = readClasses(libs, throwOnError);
     }
 
-
     public void writeBindings(String filename) throws IOException, ClassNotFoundException {
         Binding[] bindings = generateBindings(filename);
         Set<File> writtenFiles = new HashSet<File>();
@@ -54,8 +55,15 @@ public class Generator {
                 try (PrintStream ps = new PrintStream(b.getFile())) {
                     ps.append(b.getContent());
                 }
+                // A file with that name has already been written
             } else {
-                throw new IOException("File already exists. This may lead to undesired behavior.\nPlease change the name of one of the extended classes.\n" + b.getFile());
+                // Compare text contents for equality
+                String content = new String(Files.readAllBytes(Paths.get(b.getFile().toString())));
+                if (content.equals(b.getContent())) {
+                    System.out.println("Warning: File already exists. This could mean the same code has been parsed more than once from two or more different files.");
+                } else {
+                    throw new IOException("File already exists. This may lead to undesired behavior.\nPlease change the name of one of the extended classes.\n" + b.getFile());
+                }
             }
         }
     }
