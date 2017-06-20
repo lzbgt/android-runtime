@@ -39,13 +39,10 @@ apply plugin: "com.android.application"
 def isWinOs = System.properties['os.name'].toLowerCase().contains('windows')
 def metadataParams = new LinkedList <String> ()
 def allJarPaths = new LinkedList <String> ()
-def configurationsDir = "$projectDir/configurations"
-def createPluginConfigFile = false
 def configStage = "\n:config phase: "
 def nodeModulesDir = "../../node_modules/"
 def libDir = "$projectDir/../../lib/Android/"
-def flavorNames = new ArrayList<String>()
-def configDir = file(configurationsDir)
+def configurationsDir = new File(projectDir, "configurations")
 
 def packageJsonContents = [:]
 def excludedDevDependencies = ['**/.bin/**']
@@ -55,7 +52,7 @@ def asbgProject = project(":asbg")
 asbgProject.ext.outDir = new File("$projectDir", "src/main/java")
 asbgProject.ext.jsCodeDir = new File("$projectDir", "src/main/assets/app")
 
-def compiteCompileSdkVersion () {
+def computeCompileSdkVersion () {
 	if(project.hasProperty("compileSdk")) {
 		return compileSdk
 	}
@@ -118,7 +115,7 @@ task getDevDependencies {
 ////////////////////////////////////////////////////////////////////////////////////
 
 android {
-	compileSdkVersion compiteCompileSdkVersion()
+	compileSdkVersion computeCompileSdkVersion()
     buildToolsVersion computeBuildToolsVersion()
 	
 	defaultConfig {
@@ -317,7 +314,7 @@ def createIncludeFile (filePath, flavor, dimensionName) {
 	defaultIncludeFile.text =  createProductFlavorsContent(flavor, dimensionName);
 }
 
-def sanatizeDimensionName(str) {
+def sanitizeDimensionName(str) {
 	return str.replaceAll(/\W/, "")
 }
 
@@ -399,58 +396,51 @@ def flavorNumber = 0
 task createDefaultIncludeFiles {
 	description "creates default include.gradle files for added plugins IF NECESSARY"
 	println "$configStage createDefaultIncludeFiles"
-	def ft = file(configurationsDir)
-		
-	ft.listFiles().each { fl ->
+
+	def flavorNames = new ArrayList<String>()
+	configurationsDir.listFiles().each { fl ->
 	
-		if(fl.isDirectory()) {
+		if (fl.isDirectory()) {
 			def fileName = fl.name
-			def dimensionName = sanatizeDimensionName(fileName)
-			createPluginConfigFile = true
-			def foundIncludeFile = false
-			
-			def flavor = "F" + flavorNumber++
 			println "\t+found plugins: " + fileName
-			fl.listFiles().each { subFile ->
-			
-				if(subFile.name == "include.gradle") {
-					foundIncludeFile = true
-					updateIncludeGradleFile(subFile, dimensionName, flavor)
-                                        renamePluginDirToFlavorName(subFile.getParentFile(), flavor);
-				}
+
+			def dimensionName = sanitizeDimensionName(fileName)
+			def flavor = "F" + flavorNumber++
+			def includeGradleFile = new File(fl, "include.gradle")
+			def foundIncludeFile = includeGradleFile.exists()
+			if (foundIncludeFile) {
+				updateIncludeGradleFile(includeGradleFile, dimensionName, flavor)
+				renamePluginDirToFlavorName(includeGradleFile.getParentFile(), flavor)
 			}
-			
+
 			flavorNames.add('"' + dimensionName + '"')
 			
 			if(!foundIncludeFile) {
 				createIncludeFile(fl.getAbsolutePath() , flavor, dimensionName)
-				renamePluginDirToFlavorName(fl, flavor);
+				renamePluginDirToFlavorName(fl, flavor)
 			}
 		}
 	}
+
+	createPluginsConfigFile(flavorNames, configurationsDir)
 }
 
-task createPluginsConfigFile {
+def createPluginsConfigFile(flavorNames, configurationsDir) {
 	description "creates product flavor config file based on what plugins are added"
-	
-	if(configDir.exists()) {
-		println "$configStage createPluginsConfigFile"
-		
-		def flavorsFile = new File("$configurationsDir/include.gradle")
+	if (!configurationsDir.exists() || flavorNames.isEmpty()) {
+		return
+	}
 
-		if(createPluginConfigFile) {
-			println "\t Creating product flavors include.gradle file in $configurationsDir folder..."
-			def flavors = flavorNames.join(", ")
-			
-			def content = """
+	println "\t Creating product flavors include.gradle file in $configurationsDir folder..."
+
+	def flavorsFile = new File(configurationsDir, "include.gradle")
+	def flavors = flavorNames.join(", ")
+	def content = """
 android {
     flavorDimensions ${flavors}
 }
 """
-			
-			flavorsFile.text =  content
-		}
-	}
+	flavorsFile.text =  content
 }
 
 task pluginExtend {
@@ -462,9 +452,9 @@ task pluginExtend {
 		apply from: pathToAppGradle
 	}
 
-	if(configDir.exists()) {
+	if(configurationsDir.exists()) {
 	println "$configStage pluginExtend"
-		configDir.eachFileRecurse(groovy.io.FileType.FILES) {
+		configurationsDir.eachFileRecurse(groovy.io.FileType.FILES) {
 			if(it.name.equals('include.gradle')) {
 				println "\t+applying configuration from: " + it
 				apply from: it
