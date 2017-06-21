@@ -42,15 +42,17 @@ def allJarPaths = new LinkedList <String> ()
 def configStage = "\n:config phase: "
 def nodeModulesDir = "../../node_modules/"
 def libDir = "$projectDir/../../lib/Android/"
-def configurationsDir = new File(projectDir, "configurations")
+def configurationsDir = file("configurations")
+def dependenciesJsonPath = file("dependencies.json");
+def nativescriptDependencies = new groovy.json.JsonSlurper().parseText(dependenciesJsonPath.text)
 
 def packageJsonContents = [:]
 def excludedDevDependencies = ['**/.bin/**']
 
 def dontRunSbg = project.hasProperty("dontRunSbg");
 def asbgProject = project(":asbg")
-asbgProject.ext.outDir = new File("$projectDir", "src/main/java")
-asbgProject.ext.jsCodeDir = new File("$projectDir", "src/main/assets/app")
+asbgProject.ext.outDir = file("src/main/java")
+asbgProject.ext.jsCodeDir = file("src/main/assets/app")
 
 def computeCompileSdkVersion () {
 	if(project.hasProperty("compileSdk")) {
@@ -195,23 +197,25 @@ dependencies {
 	// take all jars within the node_modules dir
 	compile fileTree(dir: nodeModulesDir, include: ["**/platforms/android/**/*.jar"], exclude: excludedDevDependencies)
 
-	
 	//when gradle has aar support this will be preferred instead of addAarDependencies
 	// compile files("$rootDir/libs/aar") {
         // builtBy 'copyAarDependencies'
     // }
-	copyNativeScriptAar()
+	copyNativeScriptAar(nativescriptDependencies)
 
 	compile project(':runtime')
 }
 
+def copyNativeScriptAar(nativescriptDependencies) {
+	def useV8Symbols = nativescriptDependencies.any {
+		def packageJsonPath = file("${it.directory}/package.json");
+		def packageJson = new groovy.json.JsonSlurper().parseText(packageJsonPath.text);
+		return packageJson.nativescript.useV8Symbols;
+	}
 
-def copyNativeScriptAar() {
-	def useV8SymbolsFlag = new File("$projectDir/build-tools/useV8");
-	def runtimeAarType = "optimized";
-	if (useV8SymbolsFlag.exists() && !useV8SymbolsFlag.isDirectory()) {
+	def runtimeAarType = useV8Symbols ? "regular" : "optimized";
+	if (runtimeAarType == "regular") {
 		println "Using less-optimized runtime bundle.";
-		runtimeAarType = "regular";
 	}
 
 	copy {
@@ -279,8 +283,7 @@ def updateProductFlavorsContent(flavor, dimensionName, oldContent) {
 		return newContent;
 }
 
-def createProductFlavorsContent(flavor, dimensionName, includeAndroidContent = true)
-{
+def createProductFlavorsContent(flavor, dimensionName, includeAndroidContent = true) {
 	if (includeAndroidContent)
   	{
     	def content = """
@@ -462,13 +465,6 @@ task pluginExtend {
 		}
 	}
 }
-
-//// doesn't work unless task is explicitly called (TODO: research configurations hook)
-// addAarDependencies.dependsOn(copyAarDependencies)
-// createDefaultIncludeFiles.dependsOn(addAarDependencies)
-// createPluginsConfigFile.dependsOn(createDefaultIncludeFiles)
-// pluginExtend.dependsOn(createPluginsConfigFile)
-
 
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// BEFORE EXECUTION /////////////////////////////////////
