@@ -1,0 +1,14 @@
+[
+    {
+        "name": "nativescript-simple",
+        "directory": "../../node_modules/nativescript-simple/"
+    },
+    {
+        "name": "nativescript-aar",
+        "directory": "../../node_modules/nativescript-aar/"
+    },
+    {
+        "name": "nativescript-service",
+        "directory": "../../node_modules/nativescript-service/"
+    }
+]

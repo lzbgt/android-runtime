@@ -1,0 +1,7 @@
+{
+    "name": "nativescript-simple",
+    "version": "1.0.0",
+    "nativescript": {
+        "android": "1.0.0"
+    }
+}

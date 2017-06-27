@@ -1,0 +1,16 @@
+{
+    "nativescript": {
+        "android": "1.0.0"
+    },
+    "dependencies": {
+        "nativescript-simple": "file:../nativescript-simple",
+        "nativescript-aar": "file:../nativescript-aar",
+        "nativescript-service": "file:../nativescript-service"
+    },
+    "devDependencies":{
+        "babylon": "*",
+        "babel-traverse": "*",
+        "babel-types": "*",
+        "lazy": "*"
+    }
+}

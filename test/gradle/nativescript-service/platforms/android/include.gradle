@@ -1,0 +1,3 @@
+dependencies {
+    compile 'net.gotev:uploadservice:3.0.3'
+}

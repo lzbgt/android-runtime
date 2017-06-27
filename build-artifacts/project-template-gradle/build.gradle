@@ -331,30 +331,32 @@ def replaceProductFlavorInContent(content, dimension, flavor) {
 	def indexEnd = -1;
 	def nestedOpenBraketsCount = 0;
 
-	while (index < content.length())
-	{
-		// print content[index];
-		if (content[index] == "}")
+	if (indexStart != -1) {
+		while (index < content.length())
 		{
-			nestedOpenBraketsCount--;
-
-			if (nestedOpenBraketsCount == 0)
+			// print content[index];
+			if (content[index] == "}")
 			{
-				indexEnd = index;
-				break;
-			}
-		}
-		else if (content[index] == "{")
-		{
-			nestedOpenBraketsCount++;
-		}
+				nestedOpenBraketsCount--;
 
-		index++;
+				if (nestedOpenBraketsCount == 0)
+				{
+					indexEnd = index;
+					break;
+				}
+			}
+			else if (content[index] == "{")
+			{
+				nestedOpenBraketsCount++;
+			}
+
+			index++;
+		}
 	}
 
 	if (indexEnd != -1)
     {
-		// full content of productFlavors { ... } -> the substring is parenthesis to parenthesis -> { ... }
+      // full content of productFlavors { ... } -> the substring is parenthesis to parenthesis -> { ... }
       def oldProductFlavorsText = content.substring(indexStart, indexEnd + 1);
 
       def newProductFlavorsContent = updateProductFlavorsContent(flavor, dimension, oldProductFlavorsText);
