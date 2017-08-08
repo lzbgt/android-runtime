@@ -328,7 +328,17 @@ void ObjectManager::ReleaseJSInstance(Persistent<Object>* po, JSInstanceInfo* js
 
     m_idToObject.erase(it);
     m_released.insert(po, javaObjectID);
+
+    // In case the MarkReachableObjects is perfect, the regular instances will be reachable from an implementation object and won't be released.
+    // However, getting by mistake here, leads to referencing dangling pointers downstream, trying to get objects by weird ids.
+    // That's why we are clearing the external JSInstanceInfo* pointer from the JavaScript instance here.
+    auto jsInfoIdx = static_cast<int>(MetadataNodeKeys::JsInfo);
+    auto jsInstance = po->Get(m_isolate);
+    if (!jsInstance->IsUndefined()) {
+        jsInstance->SetInternalField(jsInfoIdx, v8::Undefined(m_isolate));
+    }
     po->Reset();
+
     delete po;
     delete jsInstanceInfo;
 
