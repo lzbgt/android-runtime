@@ -45,7 +45,7 @@ void ModuleInternal::Init(Isolate* isolate, const string& baseDir) {
     string requireFactoryScript =
         "(function () { "
         "	function require_factory(requireInternal, dirName) { "
-        "		return function require(modulePath) { "
+        "		var requireFunction = function require(modulePath) { "
         "			if(global.__requireOverride) { "
         "				var result = global.__requireOverride(modulePath, dirName); "
         "				if(result) { "
@@ -53,7 +53,9 @@ void ModuleInternal::Init(Isolate* isolate, const string& baseDir) {
         "				} "
         "			} "
         "			return requireInternal(modulePath, dirName); "
-        "		} "
+        "		}; "
+        "		requireFunction.__references = null; "
+        "		return requireFunction; "
         "	} "
         "	return require_factory; "
         "})()";

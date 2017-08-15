@@ -506,6 +506,7 @@ Isolate* Runtime::PrepareV8Runtime(const string& filesPath, const string& native
     globalTemplate->Set(ArgConverter::ConvertToV8String(isolate, "__exit"), FunctionTemplate::New(isolate, CallbackHandlers::ExitMethodCallback));
     globalTemplate->Set(ArgConverter::ConvertToV8String(isolate, "__runtimeVersion"), ArgConverter::ConvertToV8String(isolate, NATIVE_SCRIPT_RUNTIME_VERSION), readOnlyFlags);
     globalTemplate->Set(ArgConverter::ConvertToV8String(isolate, "__time"), FunctionTemplate::New(isolate, CallbackHandlers::TimeCallback));
+    globalTemplate->Set(ArgConverter::ConvertToV8String(isolate, "__references"), Undefined(isolate));
 
     /*
      * Attach `Worker` object constructor only to the main thread (isolate)'s global object

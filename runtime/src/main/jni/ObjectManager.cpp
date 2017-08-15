@@ -59,6 +59,9 @@ ObjectManager::ObjectManager(jobject javaRuntimeObject) :
     jint markingMode = m_env.CallIntMethod(m_javaRuntimeObject, getMarkingModeMethodID);
     switch(markingMode) {
         case 1:
+            m_markingMode = JavaScriptMarkingMode::Optimistic;
+            break;
+        case 2:
             m_markingMode = JavaScriptMarkingMode::None;
             break;
     }
@@ -482,9 +485,13 @@ bool ObjectManager::HasImplObject(Isolate* isolate, const Local<Object>& obj) {
 void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& obj) {
     tns::instrumentation::Frame frame;
 
-    stack<Local<Value>> s;
+    __android_log_print(ANDROID_LOG_DEBUG, "JS", "=== marking ==================");
+    int uniqueVisits = 0;
+    auto references = String::NewFromUtf8(m_isolate, "__references", NewStringType::kNormal).ToLocalChecked();
 
-    s.push(obj);
+    deque<GraphRef> s;
+
+    s.push_back({ 0, obj, "(root)", nullptr });
 
     auto propName = String::NewFromUtf8(isolate, "t::gcNum");
 
@@ -495,16 +502,21 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
     auto fromId = fromJsInfo->JavaObjectID;
 
     auto curGCNumValue = Integer::New(isolate, numberOfGC);
-
     while (!s.empty()) {
-        auto top = s.top();
-        s.pop();
+        auto graphRef = s.front();
+        s.pop_front();
+
+        auto top = graphRef.reference;
+        auto depth = graphRef.depth + 1;
+        auto edge = graphRef.edge;
+        auto source = graphRef.source;
 
         if (top.IsEmpty() || !top->IsObject()) {
             continue;
         }
 
         auto o = top.As<Object>();
+        uint8_t* addr = NativeScriptExtension::GetAddress(o);
 
         auto jsInfo = GetJSInstanceInfo(o);
         if ((jsInfo != nullptr) && (jsInfo->JavaObjectID != fromId)) {
@@ -519,12 +531,30 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
             V8SetPrivateValue(isolate, o, propName, curGCNumValue);
         }
 
-        uint8_t* addr = NativeScriptExtension::GetAddress(o);
-        auto itFound = m_visited.find(addr);
-        if (itFound != m_visited.end()) {
+        auto visited = m_visited.find(addr) != m_visited.end();
+        if (visited) {
             continue;
         }
         m_visited.insert(addr);
+
+        String::Utf8Value str(o);
+        std::stringstream msg;
+        for (auto i = 0; i < depth; i++) {
+            msg << "  ";
+        }
+        string objToString = (*str ? *str : "<failed-to-string>");
+        objToString = objToString.substr(0, objToString.find("\n"));
+        msg << " " << static_cast<void*>(source) << " " << edge << " -> " << static_cast<void*>(addr) << " " << objToString;
+        __android_log_print(ANDROID_LOG_DEBUG, "JS", msg.str().c_str());
+
+        uniqueVisits++;
+
+        if (m_markingMode == JavaScriptMarkingMode::Optimistic && o->HasOwnProperty(references)) {
+            __android_log_print(ANDROID_LOG_DEBUG, "JS", "  * SKIP!");
+            auto refs = o->Get(references);
+            s.push_back({depth, refs, "__references", addr});
+            continue;
+        }
 
         if (o->IsFunction()) {
             auto func = o.As<Function>();
@@ -534,19 +564,19 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
             for (int i = 0; i < closureObjectLength; i++) {
                 auto& curV = *(closureObjects + i);
                 if (!curV.IsEmpty() && curV->IsObject()) {
-                    s.push(curV);
+                    s.push_back({depth, curV, "(closure)", addr});
                 }
             }
             NativeScriptExtension::ReleaseClosureObjects(closureObjects);
         }
 
         if (o->IsArray()) {
-            MarkReachableArrayElements(o, s);
+            MarkReachableArrayElements(o, s, depth, addr);
         }
 
         auto proto = o->GetPrototype();
         if (!proto.IsEmpty() && !proto->IsNull() && !proto->IsUndefined() && proto->IsObject()) {
-            s.push(proto);
+            s.push_back({depth, proto, "__proto__", addr});
         }
 
         auto context = isolate->GetCurrentContext();
@@ -558,6 +588,7 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
             auto propName = propNames->Get(i);
             if (propName->IsString()) {
                 auto name = propName.As<String>();
+                String::Utf8Value propStrName(name);
 
                 bool isPropDescriptor = o->HasRealNamedCallbackProperty(name);
                 if (isPropDescriptor) {
@@ -571,7 +602,7 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
                         for (int i = 0; i < getterClosureObjectLength; i++) {
                             auto& curV = *(getterClosureObjects + i);
                             if (!curV.IsEmpty() && curV->IsObject()) {
-                                s.push(curV);
+                                s.push_back({depth, curV, *propStrName, addr});
                             }
                         }
                         NativeScriptExtension::ReleaseClosureObjects(getterClosureObjects);
@@ -583,7 +614,7 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
                         for (int i = 0; i < setterClosureObjectLength; i++) {
                             auto& curV = *(setterClosureObjects + i);
                             if (!curV.IsEmpty() && curV->IsObject()) {
-                                s.push(curV);
+                                s.push_back({depth, curV, *propStrName, addr});
                             }
                         }
 
@@ -593,13 +624,16 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
                     auto prop = o->Get(propName);
 
                     if (!prop.IsEmpty() && prop->IsObject()) {
-                        s.push(prop);
+                        s.push_back({depth, prop, *propStrName, addr});
                     }
                 }
             }
         } // for
 
     } // while
+
+    string result = string("=== unique: ") + to_string(uniqueVisits) + string(" ==================");
+    __android_log_print(ANDROID_LOG_DEBUG, "JS", result.c_str());
 
     if (frame.check()) {
         auto cls = fromJsInfo->ObjectClazz;
@@ -608,15 +642,13 @@ void ObjectManager::MarkReachableObjects(Isolate* isolate, const Local<Object>& 
     }
 }
 
-void ObjectManager::MarkReachableArrayElements(Local<Object>& o, stack<Local<Value>>& s) {
+void ObjectManager::MarkReachableArrayElements(Local<Object>& o, deque<GraphRef>& s, int depth, uint8_t* addr) {
     auto arr = o.As<Array>();
-
     int arrEnclosedObjectsLength = arr->Length();
     for (int i = 0; i < arrEnclosedObjectsLength; i++) {
         auto enclosedElement = arr->Get(i);
-
         if (!enclosedElement.IsEmpty() && enclosedElement->IsObject()) {
-            s.push(enclosedElement);
+            s.push_back({ depth, enclosedElement, to_string(i), addr });
         }
     }
 }

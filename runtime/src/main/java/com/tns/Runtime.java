@@ -204,10 +204,11 @@ public class Runtime {
 
     public int getMarkingMode() {
         String mode = staticConfiguration == null || staticConfiguration.appConfig == null ? "full" : staticConfiguration.appConfig.getMarkingMode();
-        if ("none".equals(mode)) {
-            return 1;
+        switch(mode) {
+            case "optimistic": return 1;
+            case "none": return 2;
+            default: return 0;
         }
-        return 0;
     }
 
     public static boolean isInitialized() {

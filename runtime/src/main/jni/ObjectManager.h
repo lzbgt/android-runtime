@@ -49,8 +49,6 @@ class ObjectManager {
 
         v8::Local<v8::Object> GetEmptyObject(v8::Isolate* isolate);
 
-        static void MarkReachableArrayElements(v8::Local<v8::Object> &o, std::stack<v8::Local<v8::Value>> &s);
-
         enum class MetadataNodeKeys {
             JsInfo,
             CallSuper,
@@ -60,10 +58,16 @@ class ObjectManager {
         enum class JavaScriptMarkingMode {
             /**
              * For JavaScript instances with implementation objects that were marked for collection,
-             * MarkReachableObjects will scann the whole graph of reachable objects and keep strong reference to
+             * MarkReachableObjects will scan the whole graph of reachable objects and keep strong reference to
              * the Java instances of implementation objects.
              */
             Full,
+            /**
+             * Does a full MarkReachableObjects scan, except for objects that have a "__references" property set,
+             * for these instances only the "__references" field is traversed.
+             * The require functions and the global objects have empty __references array to limit traversing huge static heap.
+             */
+            Optimistic,
             /**
              * Fully suppress the MarkReachableObjects.
              */
@@ -101,6 +105,13 @@ class ObjectManager {
             }
             std::vector<v8::Persistent<v8::Object>*> markedForGC;
             int numberOfGC;
+        };
+
+        struct GraphRef {
+            int depth;
+            v8::Local<v8::Value> reference;
+            std::string edge;
+            uint8_t* source;
         };
 
         class PersistentObjectIdSet {
@@ -163,6 +174,8 @@ class ObjectManager {
         bool HasImplObject(v8::Isolate* isolate, const v8::Local<v8::Object>& obj);
 
         void MarkReachableObjects(v8::Isolate* isolate, const v8::Local<v8::Object>& obj);
+
+        static void MarkReachableArrayElements(v8::Local<v8::Object> &o, std::deque<GraphRef> &s, int depth, uint8_t* addr);
 
         void OnGcStarted(v8::GCType type, v8::GCCallbackFlags flags);
 

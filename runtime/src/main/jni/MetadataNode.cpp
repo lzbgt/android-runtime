@@ -703,6 +703,12 @@ Local<FunctionTemplate> MetadataNode::GetConstructorFunctionTemplate(Isolate* is
     ctorFuncTemplate = FunctionTemplate::New(isolate, funcCallback, ctorCallbackData);
     ctorFuncTemplate->InstanceTemplate()->SetInternalFieldCount(static_cast<int>(ObjectManager::MetadataNodeKeys::END));
 
+    // TODO: Check if this is returned by an var MyClass = Class.extend({});
+//    if (true) {
+//        ctorFuncTemplate->Set(ArgConverter::ConvertToV8String(isolate, "__references"), Undefined(isolate));
+//        ctorFuncTemplate->InstanceTemplate()->Set(ArgConverter::ConvertToV8String(isolate, "__references"), Undefined(isolate));
+//    }
+
     Local<Function> baseCtorFunc;
     std::vector<MethodCallbackData*> baseInstanceMethodsCallbackData;
     auto tmpTreeNode = treeNode;
