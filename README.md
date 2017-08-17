@@ -25,9 +25,9 @@ The repo is structured in the following projects (ordered by dependencies):
 * **android-binding-generator** - enables Java & Android types to be dynamically created at runtime. Needed by the `extend` routine.
 * **android-runtime** - contains the core logic behind the NativeScript's Android Runtime. This project contains native C++ code and needs the Android NDK to build properly.
 * **android-runtime-testapp** - this is a vanilla Android Application, which contains the tests for the runtime project.
+* **android-static-binding-generator** - build tool that generates bindings based on the user's javascript code
 
 ### Helper Projects
-* **android-static-binding-generator** - build tool that generates bindings based on the user's javascript code
 * **android-binding-generator-tester** - contains the tests for the binding-generator project.
 * **build/project-template** - this is an empty placeholder Android Application project, used by the [NativeScript CLI](https://github.com/NativeScript/nativescript-cli) when building an Android project.
 
@@ -35,7 +35,7 @@ The repo is structured in the following projects (ordered by dependencies):
 
 * Run command 
 ```Shell
-gradlew build
+gradlew
 ```
 * The result of the build will be in the dist folder.
 
