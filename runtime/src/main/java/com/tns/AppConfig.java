@@ -8,7 +8,7 @@ import android.os.Build;
 import android.util.Log;
 
 class AppConfig {
-    private enum KnownKeys {
+    protected enum KnownKeys {
         V8FlagsKey("v8Flags", "--expose_gc"),
         CodeCacheKey("codeCache", false),
         HeapSnapshotScriptKey("heapSnapshotScript", ""),
@@ -18,7 +18,7 @@ class AppConfig {
         MemoryCheckInterval("memoryCheckInterval", 0),
         FreeMemoryRatio("freeMemoryRatio", 0.0),
         Profiling("profiling", ""),
-        MarkingMode("markingMode", com.tns.MarkingMode.values()[0]);
+        MarkingMode("markingMode", com.tns.MarkingMode.full);
 
         private final String name;
         private final Object defaultValue;
@@ -94,7 +94,9 @@ class AppConfig {
                         try {
                             String value = androidObject.getString(KnownKeys.MarkingMode.getName());
                             values[KnownKeys.MarkingMode.ordinal()] = MarkingMode.valueOf(value);
-                        } catch(Throwable e) {
+                        } catch(Exception e) {
+                            e.printStackTrace();
+                            Log.v("JS", "Failed to parse marking mode. The default " + KnownKeys.MarkingMode.getDefaultValue().name() + " will be used.");
                         }
                     }
                 }
