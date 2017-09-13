@@ -82,9 +82,9 @@ void CancelDebugBreak(Isolate* isolate);
 MaybeLocal<Array> GetInternalProperties(Isolate* isolate, Local<Value> value);
 
 enum ExceptionBreakState {
-  NoBreakOnException = 0,
-  BreakOnUncaughtException = 1,
-  BreakOnAnyException = 2
+    NoBreakOnException = 0,
+    BreakOnUncaughtException = 1,
+    BreakOnAnyException = 2
 };
 
 /**
@@ -98,10 +98,10 @@ void ChangeBreakOnException(Isolate* isolate, ExceptionBreakState state);
 void SetBreakPointsActive(Isolate* isolate, bool is_active);
 
 enum StepAction {
-  StepOut = 0,   // Step out of the current function.
-  StepNext = 1,  // Step to the next statement in the current function.
-  StepIn = 2     // Step into new functions invoked or the next statement
-                 // in the current function.
+    StepOut = 0,   // Step out of the current function.
+    StepNext = 1,  // Step to the next statement in the current function.
+    StepIn = 2     // Step into new functions invoked or the next statement
+             // in the current function.
 };
 
 void PrepareStep(Isolate* isolate, StepAction action);
@@ -124,69 +124,69 @@ void SetOutOfMemoryCallback(Isolate* isolate, OutOfMemoryCallback callback,
  * Native wrapper around v8::internal::Script object.
  */
 class V8_EXPORT_PRIVATE Script {
- public:
-  v8::Isolate* GetIsolate() const;
+    public:
+        v8::Isolate* GetIsolate() const;
 
-  ScriptOriginOptions OriginOptions() const;
-  bool WasCompiled() const;
-  bool IsEmbedded() const;
-  int Id() const;
-  int LineOffset() const;
-  int ColumnOffset() const;
-  std::vector<int> LineEnds() const;
-  MaybeLocal<String> Name() const;
-  MaybeLocal<String> SourceURL() const;
-  MaybeLocal<String> SourceMappingURL() const;
-  Maybe<int> ContextId() const;
-  MaybeLocal<String> Source() const;
-  bool IsWasm() const;
-  bool IsModule() const;
-  bool GetPossibleBreakpoints(
-      const debug::Location& start, const debug::Location& end,
-      bool restrict_to_function,
-      std::vector<debug::BreakLocation>* locations) const;
-  int GetSourceOffset(const debug::Location& location) const;
-  v8::debug::Location GetSourceLocation(int offset) const;
+        ScriptOriginOptions OriginOptions() const;
+        bool WasCompiled() const;
+        bool IsEmbedded() const;
+        int Id() const;
+        int LineOffset() const;
+        int ColumnOffset() const;
+        std::vector<int> LineEnds() const;
+        MaybeLocal<String> Name() const;
+        MaybeLocal<String> SourceURL() const;
+        MaybeLocal<String> SourceMappingURL() const;
+        Maybe<int> ContextId() const;
+        MaybeLocal<String> Source() const;
+        bool IsWasm() const;
+        bool IsModule() const;
+        bool GetPossibleBreakpoints(
+            const debug::Location& start, const debug::Location& end,
+            bool restrict_to_function,
+            std::vector<debug::BreakLocation>* locations) const;
+        int GetSourceOffset(const debug::Location& location) const;
+        v8::debug::Location GetSourceLocation(int offset) const;
 };
 
 // Specialization for wasm Scripts.
 class WasmScript : public Script {
- public:
-  static WasmScript* Cast(Script* script);
+    public:
+        static WasmScript* Cast(Script* script);
 
-  int NumFunctions() const;
-  int NumImportedFunctions() const;
+        int NumFunctions() const;
+        int NumImportedFunctions() const;
 
-  std::pair<int, int> GetFunctionRange(int function_index) const;
+        std::pair<int, int> GetFunctionRange(int function_index) const;
 
-  debug::WasmDisassembly DisassembleFunction(int function_index) const;
+        debug::WasmDisassembly DisassembleFunction(int function_index) const;
 };
 
 void GetLoadedScripts(Isolate* isolate, PersistentValueVector<Script>& scripts);
 
 MaybeLocal<UnboundScript> CompileInspectorScript(Isolate* isolate,
-                                                 Local<String> source);
+        Local<String> source);
 
 class DebugDelegate {
- public:
-  virtual ~DebugDelegate() {}
-  virtual void PromiseEventOccurred(debug::PromiseDebugActionType type, int id,
-                                    int parent_id, bool created_by_user) {}
-  virtual void ScriptCompiled(v8::Local<Script> script,
-                              bool has_compile_error) {}
-  virtual void BreakProgramRequested(v8::Local<v8::Context> paused_context,
+    public:
+        virtual ~DebugDelegate() {}
+        virtual void PromiseEventOccurred(debug::PromiseDebugActionType type, int id,
+                                          int parent_id, bool created_by_user) {}
+        virtual void ScriptCompiled(v8::Local<Script> script,
+                                    bool has_compile_error) {}
+        virtual void BreakProgramRequested(v8::Local<v8::Context> paused_context,
+                                           v8::Local<v8::Object> exec_state,
+                                           v8::Local<v8::Value> break_points_hit) {}
+        virtual void ExceptionThrown(v8::Local<v8::Context> paused_context,
                                      v8::Local<v8::Object> exec_state,
-                                     v8::Local<v8::Value> break_points_hit) {}
-  virtual void ExceptionThrown(v8::Local<v8::Context> paused_context,
-                               v8::Local<v8::Object> exec_state,
-                               v8::Local<v8::Value> exception,
-                               v8::Local<v8::Value> promise, bool is_uncaught) {
-  }
-  virtual bool IsFunctionBlackboxed(v8::Local<debug::Script> script,
-                                    const debug::Location& start,
-                                    const debug::Location& end) {
-    return false;
-  }
+                                     v8::Local<v8::Value> exception,
+                                     v8::Local<v8::Value> promise, bool is_uncaught) {
+        }
+        virtual bool IsFunctionBlackboxed(v8::Local<debug::Script> script,
+                                          const debug::Location& start,
+                                          const debug::Location& end) {
+            return false;
+        }
 };
 
 void SetDebugDelegate(Isolate* isolate, DebugDelegate* listener);
@@ -197,21 +197,21 @@ void ResetBlackboxedStateCache(Isolate* isolate,
 int EstimatedValueSize(Isolate* isolate, v8::Local<v8::Value> value);
 
 v8::MaybeLocal<v8::Array> EntriesPreview(Isolate* isolate,
-                                         v8::Local<v8::Value> value,
-                                         bool* is_key_value);
+        v8::Local<v8::Value> value,
+        bool* is_key_value);
 
 enum Builtin {
-  kObjectKeys,
-  kObjectGetPrototypeOf,
-  kObjectGetOwnPropertyDescriptor,
-  kObjectGetOwnPropertyNames,
-  kObjectGetOwnPropertySymbols,
+    kObjectKeys,
+    kObjectGetPrototypeOf,
+    kObjectGetOwnPropertyDescriptor,
+    kObjectGetOwnPropertyNames,
+    kObjectGetOwnPropertySymbols,
 };
 
 Local<Function> GetBuiltin(Isolate* isolate, Builtin builtin);
 
 V8_EXPORT_PRIVATE void SetConsoleDelegate(Isolate* isolate,
-                                          ConsoleDelegate* delegate);
+        ConsoleDelegate* delegate);
 
 int GetStackFrameId(v8::Local<v8::StackFrame> frame);
 
@@ -219,79 +219,81 @@ int GetStackFrameId(v8::Local<v8::StackFrame> frame);
  * Native wrapper around v8::internal::JSGeneratorObject object.
  */
 class GeneratorObject {
- public:
-  v8::MaybeLocal<debug::Script> Script();
-  v8::Local<v8::Function> Function();
-  debug::Location SuspendedLocation();
-  bool IsSuspended();
+    public:
+        v8::MaybeLocal<debug::Script> Script();
+        v8::Local<v8::Function> Function();
+        debug::Location SuspendedLocation();
+        bool IsSuspended();
 
-  static v8::Local<debug::GeneratorObject> Cast(v8::Local<v8::Value> value);
+        static v8::Local<debug::GeneratorObject> Cast(v8::Local<v8::Value> value);
 };
 
 /*
  * Provide API layer between inspector and code coverage.
  */
 class V8_EXPORT_PRIVATE Coverage {
- public:
-  enum Mode {
-    // Make use of existing information in feedback vectors on the heap.
-    // Only return a yes/no result. Optimization and GC are not affected.
-    // Collecting best effort coverage does not reset counters.
-    kBestEffort,
-    // Disable optimization and prevent feedback vectors from being garbage
-    // collected in order to preserve precise invocation counts. Collecting
-    // precise count coverage resets counters to get incremental updates.
-    kPreciseCount,
-    // We are only interested in a yes/no result for the function. Optimization
-    // and GC can be allowed once a function has been invoked. Collecting
-    // precise binary coverage resets counters for incremental updates.
-    kPreciseBinary
-  };
+    public:
+        enum Mode {
+            // Make use of existing information in feedback vectors on the heap.
+            // Only return a yes/no result. Optimization and GC are not affected.
+            // Collecting best effort coverage does not reset counters.
+            kBestEffort,
+            // Disable optimization and prevent feedback vectors from being garbage
+            // collected in order to preserve precise invocation counts. Collecting
+            // precise count coverage resets counters to get incremental updates.
+            kPreciseCount,
+            // We are only interested in a yes/no result for the function. Optimization
+            // and GC can be allowed once a function has been invoked. Collecting
+            // precise binary coverage resets counters for incremental updates.
+            kPreciseBinary
+        };
 
-  class ScriptData;  // Forward declaration.
+        class ScriptData;  // Forward declaration.
 
-  class V8_EXPORT_PRIVATE FunctionData {
-   public:
-    int StartOffset() const;
-    int EndOffset() const;
-    uint32_t Count() const;
-    MaybeLocal<String> Name() const;
+        class V8_EXPORT_PRIVATE FunctionData {
+            public:
+                int StartOffset() const;
+                int EndOffset() const;
+                uint32_t Count() const;
+                MaybeLocal<String> Name() const;
 
-   private:
-    explicit FunctionData(i::CoverageFunction* function)
-        : function_(function) {}
-    i::CoverageFunction* function_;
+            private:
+                explicit FunctionData(i::CoverageFunction* function)
+                    : function_(function) {}
+                i::CoverageFunction* function_;
 
-    friend class v8::debug::Coverage::ScriptData;
-  };
+                friend class v8::debug::Coverage::ScriptData;
+        };
 
-  class V8_EXPORT_PRIVATE ScriptData {
-   public:
-    Local<debug::Script> GetScript() const;
-    size_t FunctionCount() const;
-    FunctionData GetFunctionData(size_t i) const;
+        class V8_EXPORT_PRIVATE ScriptData {
+            public:
+                Local<debug::Script> GetScript() const;
+                size_t FunctionCount() const;
+                FunctionData GetFunctionData(size_t i) const;
 
-   private:
-    explicit ScriptData(i::CoverageScript* script) : script_(script) {}
-    i::CoverageScript* script_;
+            private:
+                explicit ScriptData(i::CoverageScript* script) : script_(script) {}
+                i::CoverageScript* script_;
 
-    friend class v8::debug::Coverage;
-  };
+                friend class v8::debug::Coverage;
+        };
 
-  static Coverage CollectPrecise(Isolate* isolate);
-  static Coverage CollectBestEffort(Isolate* isolate);
+        static Coverage CollectPrecise(Isolate* isolate);
+        static Coverage CollectBestEffort(Isolate* isolate);
 
-  static void SelectMode(Isolate* isolate, Mode mode);
+        static void SelectMode(Isolate* isolate, Mode mode);
 
-  size_t ScriptCount() const;
-  ScriptData GetScriptData(size_t i) const;
-  bool IsEmpty() const { return coverage_ == nullptr; }
+        size_t ScriptCount() const;
+        ScriptData GetScriptData(size_t i) const;
+        bool IsEmpty() const {
+            return coverage_ == nullptr;
+        }
 
-  ~Coverage();
+        ~Coverage();
 
- private:
-  explicit Coverage(i::Coverage* coverage) : coverage_(coverage) {}
-  i::Coverage* coverage_;
+    private:
+        explicit Coverage(i::Coverage* coverage) : coverage_(coverage) {}
+        i::Coverage* coverage_;
 };
 }  // namespace debug
 }  // namespace v8

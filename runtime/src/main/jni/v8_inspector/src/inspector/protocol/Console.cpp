@@ -36,8 +36,7 @@ const char* ConsoleMessage::LevelEnum::Error = "error";
 const char* ConsoleMessage::LevelEnum::Debug = "debug";
 const char* ConsoleMessage::LevelEnum::Info = "info";
 
-std::unique_ptr<ConsoleMessage> ConsoleMessage::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<ConsoleMessage> ConsoleMessage::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -71,34 +70,35 @@ std::unique_ptr<ConsoleMessage> ConsoleMessage::fromValue(protocol::Value* value
         result->m_column = ValueConversions<int>::fromValue(columnValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> ConsoleMessage::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> ConsoleMessage::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("source", ValueConversions<String>::toValue(m_source));
     result->setValue("level", ValueConversions<String>::toValue(m_level));
     result->setValue("text", ValueConversions<String>::toValue(m_text));
-    if (m_url.isJust())
+    if (m_url.isJust()) {
         result->setValue("url", ValueConversions<String>::toValue(m_url.fromJust()));
-    if (m_line.isJust())
+    }
+    if (m_line.isJust()) {
         result->setValue("line", ValueConversions<int>::toValue(m_line.fromJust()));
-    if (m_column.isJust())
+    }
+    if (m_column.isJust()) {
         result->setValue("column", ValueConversions<int>::toValue(m_column.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<ConsoleMessage> ConsoleMessage::clone() const
-{
+std::unique_ptr<ConsoleMessage> ConsoleMessage::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<MessageAddedNotification> MessageAddedNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<MessageAddedNotification> MessageAddedNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -111,20 +111,19 @@ std::unique_ptr<MessageAddedNotification> MessageAddedNotification::fromValue(pr
     errors->setName("message");
     result->m_message = ValueConversions<protocol::Console::ConsoleMessage>::fromValue(messageValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> MessageAddedNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> MessageAddedNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("message", ValueConversions<protocol::Console::ConsoleMessage>::toValue(m_message.get()));
     return result;
 }
 
-std::unique_ptr<MessageAddedNotification> MessageAddedNotification::clone() const
-{
+std::unique_ptr<MessageAddedNotification> MessageAddedNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
@@ -134,60 +133,58 @@ std::unique_ptr<MessageAddedNotification> MessageAddedNotification::clone() cons
 
 // ------------- Frontend notifications.
 
-void Frontend::messageAdded(std::unique_ptr<protocol::Console::ConsoleMessage> message)
-{
-    if (!m_frontendChannel)
+void Frontend::messageAdded(std::unique_ptr<protocol::Console::ConsoleMessage> message) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<MessageAddedNotification> messageData = MessageAddedNotification::create()
-        .setMessage(std::move(message))
-        .build();
+            .setMessage(std::move(message))
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Console.messageAdded", std::move(messageData)));
 }
 
-void Frontend::flush()
-{
+void Frontend::flush() {
     m_frontendChannel->flushProtocolNotifications();
 }
 
-void Frontend::sendRawNotification(const String& notification)
-{
+void Frontend::sendRawNotification(const String& notification) {
     m_frontendChannel->sendProtocolNotification(InternalRawNotification::create(notification));
 }
 
 // --------------------- Dispatcher.
 
 class DispatcherImpl : public protocol::DispatcherBase {
-public:
-    DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
-        : DispatcherBase(frontendChannel)
-        , m_backend(backend)
-        , m_fallThroughForNotFound(fallThroughForNotFound) {
-        m_dispatchMap["Console.enable"] = &DispatcherImpl::enable;
-        m_dispatchMap["Console.disable"] = &DispatcherImpl::disable;
-        m_dispatchMap["Console.clearMessages"] = &DispatcherImpl::clearMessages;
-    }
-    ~DispatcherImpl() override { }
-    DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
+    public:
+        DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
+            : DispatcherBase(frontendChannel)
+            , m_backend(backend)
+            , m_fallThroughForNotFound(fallThroughForNotFound) {
+            m_dispatchMap["Console.enable"] = &DispatcherImpl::enable;
+            m_dispatchMap["Console.disable"] = &DispatcherImpl::disable;
+            m_dispatchMap["Console.clearMessages"] = &DispatcherImpl::clearMessages;
+        }
+        ~DispatcherImpl() override { }
+        DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
 
-protected:
-    using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
-    using DispatchMap = protocol::HashMap<String, CallHandler>;
-    DispatchMap m_dispatchMap;
+    protected:
+        using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
+        using DispatchMap = protocol::HashMap<String, CallHandler>;
+        DispatchMap m_dispatchMap;
 
-    DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status clearMessages(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status clearMessages(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
 
-    Backend* m_backend;
-    bool m_fallThroughForNotFound;
+        Backend* m_backend;
+        bool m_fallThroughForNotFound;
 };
 
-DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject)
-{
+DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) {
     protocol::HashMap<String, CallHandler>::iterator it = m_dispatchMap.find(method);
     if (it == m_dispatchMap.end()) {
-        if (m_fallThroughForNotFound)
+        if (m_fallThroughForNotFound) {
             return DispatchResponse::kFallThrough;
+        }
         reportProtocolError(callId, DispatchResponse::kMethodNotFound, "'" + method + "' wasn't found", nullptr);
         return DispatchResponse::kError;
     }
@@ -197,39 +194,38 @@ DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& meth
 }
 
 
-DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->enable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->disable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::clearMessages(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::clearMessages(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->clearMessages();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
 // static
-void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend)
-{
+void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend) {
     dispatcher->registerBackend("Console", std::unique_ptr<protocol::DispatcherBase>(new DispatcherImpl(dispatcher->channel(), backend, dispatcher->fallThroughForNotFound())));
 }
 

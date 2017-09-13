@@ -10,16 +10,16 @@
 
 namespace v8_inspector {
 
-    class V8InspectorSessionImpl;
+class V8InspectorSessionImpl;
 
-    using v8_inspector::protocol::Maybe;
-    using String = v8_inspector::String16;
-    using v8_inspector::protocol::DispatchResponse;
+using v8_inspector::protocol::Maybe;
+using String = v8_inspector::String16;
+using v8_inspector::protocol::DispatchResponse;
 
-    class V8DOMAgentImpl : public protocol::DOM::Backend {
+class V8DOMAgentImpl : public protocol::DOM::Backend {
     public:
-        V8DOMAgentImpl(V8InspectorSessionImpl *, protocol::FrontendChannel *,
-                           protocol::DictionaryValue *state);
+        V8DOMAgentImpl(V8InspectorSessionImpl*, protocol::FrontendChannel*,
+                       protocol::DictionaryValue* state);
 
         ~V8DOMAgentImpl() override;
 
@@ -51,7 +51,7 @@ namespace v8_inspector {
         bool m_enabled;
 
         DISALLOW_COPY_AND_ASSIGN(V8DOMAgentImpl);
-    };
+};
 }
 
 #endif //V8_DOM_AGENT_IMPL_H

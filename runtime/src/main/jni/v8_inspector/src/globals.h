@@ -275,7 +275,7 @@ const int kSimd128Size = 16;
 // of type F. Used to invoke generated code from within C.
 template <typename F>
 F FUNCTION_CAST(Address addr) {
-  return reinterpret_cast<F>(reinterpret_cast<intptr_t>(addr));
+    return reinterpret_cast<F>(reinterpret_cast<intptr_t>(addr));
 }
 
 
@@ -308,28 +308,31 @@ template <typename T, class P = FreeStoreAllocationPolicy> class List;
 enum LanguageMode : uint32_t { SLOPPY, STRICT, LANGUAGE_END };
 
 inline std::ostream& operator<<(std::ostream& os, const LanguageMode& mode) {
-  switch (mode) {
-    case SLOPPY: return os << "sloppy";
-    case STRICT: return os << "strict";
-    default: UNREACHABLE();
-  }
-  return os;
+    switch (mode) {
+    case SLOPPY:
+        return os << "sloppy";
+    case STRICT:
+        return os << "strict";
+    default:
+        UNREACHABLE();
+    }
+    return os;
 }
 
 inline bool is_sloppy(LanguageMode language_mode) {
-  return language_mode == SLOPPY;
+    return language_mode == SLOPPY;
 }
 
 inline bool is_strict(LanguageMode language_mode) {
-  return language_mode != SLOPPY;
+    return language_mode != SLOPPY;
 }
 
 inline bool is_valid_language_mode(int language_mode) {
-  return language_mode == SLOPPY || language_mode == STRICT;
+    return language_mode == SLOPPY || language_mode == STRICT;
 }
 
 inline LanguageMode construct_language_mode(bool strict_bit) {
-  return static_cast<LanguageMode>(strict_bit);
+    return static_cast<LanguageMode>(strict_bit);
 }
 
 enum TypeofMode : int { INSIDE_TYPEOF, NOT_INSIDE_TYPEOF };
@@ -343,17 +346,17 @@ const int kNoDeoptimizationId = -1;
 // Deoptimize bailout kind.
 enum class DeoptimizeKind : uint8_t { kEager, kSoft };
 inline size_t hash_value(DeoptimizeKind kind) {
-  return static_cast<size_t>(kind);
+    return static_cast<size_t>(kind);
 }
 inline std::ostream& operator<<(std::ostream& os, DeoptimizeKind kind) {
-  switch (kind) {
+    switch (kind) {
     case DeoptimizeKind::kEager:
-      return os << "Eager";
+        return os << "Eager";
     case DeoptimizeKind::kSoft:
-      return os << "Soft";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "Soft";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // Mask for the sign bit in a smi.
@@ -499,16 +502,16 @@ typedef bool (*WeakSlotCallbackWithHeap)(Heap* heap, Object** pointer);
 // consecutive.
 // Keep this enum in sync with the ObjectSpace enum in v8.h
 enum AllocationSpace {
-  NEW_SPACE,   // Semispaces collected with copying collector.
-  OLD_SPACE,   // May contain pointers to new space.
-  CODE_SPACE,  // No pointers to new space, marked executable.
-  MAP_SPACE,   // Only and all map objects.
-  LO_SPACE,    // Promoted large objects.
+    NEW_SPACE,   // Semispaces collected with copying collector.
+    OLD_SPACE,   // May contain pointers to new space.
+    CODE_SPACE,  // No pointers to new space, marked executable.
+    MAP_SPACE,   // Only and all map objects.
+    LO_SPACE,    // Promoted large objects.
 
-  FIRST_SPACE = NEW_SPACE,
-  LAST_SPACE = LO_SPACE,
-  FIRST_PAGED_SPACE = OLD_SPACE,
-  LAST_PAGED_SPACE = MAP_SPACE
+    FIRST_SPACE = NEW_SPACE,
+    LAST_SPACE = LO_SPACE,
+    FIRST_PAGED_SPACE = OLD_SPACE,
+    LAST_PAGED_SPACE = MAP_SPACE
 };
 const int kSpaceTagSize = 3;
 const int kSpaceTagMask = (1 << kSpaceTagSize) - 1;
@@ -519,47 +522,47 @@ enum AllocationAlignment { kWordAligned, kDoubleAligned, kDoubleUnaligned };
 enum class Decision : uint8_t { kUnknown, kTrue, kFalse };
 
 inline size_t hash_value(Decision decision) {
-  return static_cast<uint8_t>(decision);
+    return static_cast<uint8_t>(decision);
 }
 
 inline std::ostream& operator<<(std::ostream& os, Decision decision) {
-  switch (decision) {
+    switch (decision) {
     case Decision::kUnknown:
-      return os << "Unknown";
+        return os << "Unknown";
     case Decision::kTrue:
-      return os << "True";
+        return os << "True";
     case Decision::kFalse:
-      return os << "False";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "False";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // Supported write barrier modes.
 enum WriteBarrierKind : uint8_t {
-  kNoWriteBarrier,
-  kMapWriteBarrier,
-  kPointerWriteBarrier,
-  kFullWriteBarrier
+    kNoWriteBarrier,
+    kMapWriteBarrier,
+    kPointerWriteBarrier,
+    kFullWriteBarrier
 };
 
 inline size_t hash_value(WriteBarrierKind kind) {
-  return static_cast<uint8_t>(kind);
+    return static_cast<uint8_t>(kind);
 }
 
 inline std::ostream& operator<<(std::ostream& os, WriteBarrierKind kind) {
-  switch (kind) {
+    switch (kind) {
     case kNoWriteBarrier:
-      return os << "NoWriteBarrier";
+        return os << "NoWriteBarrier";
     case kMapWriteBarrier:
-      return os << "MapWriteBarrier";
+        return os << "MapWriteBarrier";
     case kPointerWriteBarrier:
-      return os << "PointerWriteBarrier";
+        return os << "PointerWriteBarrier";
     case kFullWriteBarrier:
-      return os << "FullWriteBarrier";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "FullWriteBarrier";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // A flag that indicates whether objects should be pretenured when
@@ -569,19 +572,19 @@ inline std::ostream& operator<<(std::ostream& os, WriteBarrierKind kind) {
 enum PretenureFlag { NOT_TENURED, TENURED };
 
 inline std::ostream& operator<<(std::ostream& os, const PretenureFlag& flag) {
-  switch (flag) {
+    switch (flag) {
     case NOT_TENURED:
-      return os << "NotTenured";
+        return os << "NotTenured";
     case TENURED:
-      return os << "Tenured";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "Tenured";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 enum MinimumCapacity {
-  USE_DEFAULT_MINIMUM_CAPACITY,
-  USE_CUSTOM_MINIMUM_CAPACITY
+    USE_DEFAULT_MINIMUM_CAPACITY,
+    USE_CUSTOM_MINIMUM_CAPACITY
 };
 
 enum GarbageCollector { SCAVENGER, MARK_COMPACTOR, MINOR_MARK_COMPACTOR };
@@ -589,20 +592,20 @@ enum GarbageCollector { SCAVENGER, MARK_COMPACTOR, MINOR_MARK_COMPACTOR };
 enum Executability { NOT_EXECUTABLE, EXECUTABLE };
 
 enum VisitMode {
-  VISIT_ALL,
-  VISIT_ALL_IN_SCAVENGE,
-  VISIT_ALL_IN_SWEEP_NEWSPACE,
-  VISIT_ONLY_STRONG,
-  VISIT_ONLY_STRONG_FOR_SERIALIZATION,
-  VISIT_ONLY_STRONG_ROOT_LIST,
+    VISIT_ALL,
+    VISIT_ALL_IN_SCAVENGE,
+    VISIT_ALL_IN_SWEEP_NEWSPACE,
+    VISIT_ONLY_STRONG,
+    VISIT_ONLY_STRONG_FOR_SERIALIZATION,
+    VISIT_ONLY_STRONG_ROOT_LIST,
 };
 
 // Flag indicating whether code is built into the VM (one of the natives files).
 enum NativesFlag {
-  NOT_NATIVES_CODE,
-  EXTENSION_CODE,
-  NATIVES_CODE,
-  INSPECTOR_CODE
+    NOT_NATIVES_CODE,
+    EXTENSION_CODE,
+    NATIVES_CODE,
+    INSPECTOR_CODE
 };
 
 // JavaScript defines two kinds of 'nil'.
@@ -611,8 +614,8 @@ enum NilValue { kNullValue, kUndefinedValue };
 // ParseRestriction is used to restrict the set of valid statements in a
 // unit of compilation.  Restriction violations cause a syntax error.
 enum ParseRestriction {
-  NO_PARSE_RESTRICTION,         // All expressions are allowed.
-  ONLY_SINGLE_FUNCTION_LITERAL  // Only a single FunctionLiteral expression.
+    NO_PARSE_RESTRICTION,         // All expressions are allowed.
+    ONLY_SINGLE_FUNCTION_LITERAL  // Only a single FunctionLiteral expression.
 };
 
 // A CodeDesc describes a buffer holding instructions and relocation
@@ -632,14 +635,14 @@ enum ParseRestriction {
 //  buffer
 
 struct CodeDesc {
-  byte* buffer;
-  int buffer_size;
-  int instr_size;
-  int reloc_size;
-  int constant_pool_size;
-  byte* unwinding_info;
-  int unwinding_info_size;
-  Assembler* origin;
+    byte* buffer;
+    int buffer_size;
+    int instr_size;
+    int reloc_size;
+    int constant_pool_size;
+    byte* unwinding_info;
+    int unwinding_info_size;
+    Assembler* origin;
 };
 
 
@@ -656,29 +659,29 @@ typedef void (*InlineCacheCallback)(Code* code, Address ic);
 
 // State for inline cache call sites. Aliased as IC::State.
 enum InlineCacheState {
-  // Has never been executed.
-  UNINITIALIZED,
-  // Has been executed but monomorhic state has been delayed.
-  PREMONOMORPHIC,
-  // Has been executed and only one receiver type has been seen.
-  MONOMORPHIC,
-  // Check failed due to prototype (or map deprecation).
-  RECOMPUTE_HANDLER,
-  // Multiple receiver types have been seen.
-  POLYMORPHIC,
-  // Many receiver types have been seen.
-  MEGAMORPHIC,
-  // A generic handler is installed and no extra typefeedback is recorded.
-  GENERIC,
+    // Has never been executed.
+    UNINITIALIZED,
+    // Has been executed but monomorhic state has been delayed.
+    PREMONOMORPHIC,
+    // Has been executed and only one receiver type has been seen.
+    MONOMORPHIC,
+    // Check failed due to prototype (or map deprecation).
+    RECOMPUTE_HANDLER,
+    // Multiple receiver types have been seen.
+    POLYMORPHIC,
+    // Many receiver types have been seen.
+    MEGAMORPHIC,
+    // A generic handler is installed and no extra typefeedback is recorded.
+    GENERIC,
 };
 
 enum WhereToStart { kStartAtReceiver, kStartAtPrototype };
 
 // The Store Buffer (GC).
 typedef enum {
-  kStoreBufferFullEvent,
-  kStoreBufferStartScanningPagesEvent,
-  kStoreBufferScanningPageEvent
+    kStoreBufferFullEvent,
+    kStoreBufferStartScanningPagesEvent,
+    kStoreBufferScanningPageEvent
 } StoreBufferEvent;
 
 
@@ -690,24 +693,24 @@ typedef void (*StoreBufferCallback)(Heap* heap,
 // inlined within v8 runtime, rather than going to the underlying
 // platform headers and libraries
 union IeeeDoubleLittleEndianArchType {
-  double d;
-  struct {
-    unsigned int man_low  :32;
-    unsigned int man_high :20;
-    unsigned int exp      :11;
-    unsigned int sign     :1;
-  } bits;
+    double d;
+    struct {
+        unsigned int man_low  :32;
+        unsigned int man_high :20;
+        unsigned int exp      :11;
+        unsigned int sign     :1;
+    } bits;
 };
 
 
 union IeeeDoubleBigEndianArchType {
-  double d;
-  struct {
-    unsigned int sign     :1;
-    unsigned int exp      :11;
-    unsigned int man_high :20;
-    unsigned int man_low  :32;
-  } bits;
+    double d;
+    struct {
+        unsigned int sign     :1;
+        unsigned int exp      :11;
+        unsigned int man_high :20;
+        unsigned int man_low  :32;
+    } bits;
 };
 
 #if V8_TARGET_LITTLE_ENDIAN
@@ -722,10 +725,10 @@ const int kIeeeDoubleExponentWordOffset = 0;
 
 // AccessorCallback
 struct AccessorDescriptor {
-  Object* (*getter)(Isolate* isolate, Object* object, void* data);
-  Object* (*setter)(
-      Isolate* isolate, JSObject* object, Object* value, void* data);
-  void* data;
+    Object* (*getter)(Isolate* isolate, Object* object, void* data);
+    Object* (*setter)(
+        Isolate* isolate, JSObject* object, Object* value, void* data);
+    void* data;
 };
 
 
@@ -756,92 +759,94 @@ struct AccessorDescriptor {
 
 // CPU feature flags.
 enum CpuFeature {
-  // x86
-  SSE4_1,
-  SSSE3,
-  SSE3,
-  SAHF,
-  AVX,
-  FMA3,
-  BMI1,
-  BMI2,
-  LZCNT,
-  POPCNT,
-  ATOM,
-  // ARM
-  // - Standard configurations. The baseline is ARMv6+VFPv2.
-  ARMv7,        // ARMv7-A + VFPv3-D32 + NEON
-  ARMv7_SUDIV,  // ARMv7-A + VFPv4-D32 + NEON + SUDIV
-  ARMv8,        // ARMv8-A (+ all of the above)
-  // MIPS, MIPS64
-  FPU,
-  FP64FPU,
-  MIPSr1,
-  MIPSr2,
-  MIPSr6,
-  MIPS_SIMD,  // MSA instructions
-  // ARM64
-  ALWAYS_ALIGN_CSP,
-  // PPC
-  FPR_GPR_MOV,
-  LWSYNC,
-  ISELECT,
-  VSX,
-  MODULO,
-  // S390
-  DISTINCT_OPS,
-  GENERAL_INSTR_EXT,
-  FLOATING_POINT_EXT,
-  VECTOR_FACILITY,
-  MISC_INSTR_EXT2,
+    // x86
+    SSE4_1,
+    SSSE3,
+    SSE3,
+    SAHF,
+    AVX,
+    FMA3,
+    BMI1,
+    BMI2,
+    LZCNT,
+    POPCNT,
+    ATOM,
+    // ARM
+    // - Standard configurations. The baseline is ARMv6+VFPv2.
+    ARMv7,        // ARMv7-A + VFPv3-D32 + NEON
+    ARMv7_SUDIV,  // ARMv7-A + VFPv4-D32 + NEON + SUDIV
+    ARMv8,        // ARMv8-A (+ all of the above)
+    // MIPS, MIPS64
+    FPU,
+    FP64FPU,
+    MIPSr1,
+    MIPSr2,
+    MIPSr6,
+    MIPS_SIMD,  // MSA instructions
+    // ARM64
+    ALWAYS_ALIGN_CSP,
+    // PPC
+    FPR_GPR_MOV,
+    LWSYNC,
+    ISELECT,
+    VSX,
+    MODULO,
+    // S390
+    DISTINCT_OPS,
+    GENERAL_INSTR_EXT,
+    FLOATING_POINT_EXT,
+    VECTOR_FACILITY,
+    MISC_INSTR_EXT2,
 
-  NUMBER_OF_CPU_FEATURES,
+    NUMBER_OF_CPU_FEATURES,
 
-  // ARM feature aliases (based on the standard configurations above).
-  VFPv3 = ARMv7,
-  NEON = ARMv7,
-  VFP32DREGS = ARMv7,
-  SUDIV = ARMv7_SUDIV
+    // ARM feature aliases (based on the standard configurations above).
+    VFPv3 = ARMv7,
+    NEON = ARMv7,
+    VFP32DREGS = ARMv7,
+    SUDIV = ARMv7_SUDIV
 };
 
 // Defines hints about receiver values based on structural knowledge.
 enum class ConvertReceiverMode : unsigned {
-  kNullOrUndefined,     // Guaranteed to be null or undefined.
-  kNotNullOrUndefined,  // Guaranteed to never be null or undefined.
-  kAny                  // No specific knowledge about receiver.
+    kNullOrUndefined,     // Guaranteed to be null or undefined.
+    kNotNullOrUndefined,  // Guaranteed to never be null or undefined.
+    kAny                  // No specific knowledge about receiver.
 };
 
 inline size_t hash_value(ConvertReceiverMode mode) {
-  return bit_cast<unsigned>(mode);
+    return bit_cast<unsigned>(mode);
 }
 
 inline std::ostream& operator<<(std::ostream& os, ConvertReceiverMode mode) {
-  switch (mode) {
+    switch (mode) {
     case ConvertReceiverMode::kNullOrUndefined:
-      return os << "NULL_OR_UNDEFINED";
+        return os << "NULL_OR_UNDEFINED";
     case ConvertReceiverMode::kNotNullOrUndefined:
-      return os << "NOT_NULL_OR_UNDEFINED";
+        return os << "NOT_NULL_OR_UNDEFINED";
     case ConvertReceiverMode::kAny:
-      return os << "ANY";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "ANY";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // Defines whether tail call optimization is allowed.
 enum class TailCallMode : unsigned { kAllow, kDisallow };
 
-inline size_t hash_value(TailCallMode mode) { return bit_cast<unsigned>(mode); }
+inline size_t hash_value(TailCallMode mode) {
+    return bit_cast<unsigned>(mode);
+}
 
 inline std::ostream& operator<<(std::ostream& os, TailCallMode mode) {
-  switch (mode) {
+    switch (mode) {
     case TailCallMode::kAllow:
-      return os << "ALLOW_TAIL_CALLS";
+        return os << "ALLOW_TAIL_CALLS";
     case TailCallMode::kDisallow:
-      return os << "DISALLOW_TAIL_CALLS";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "DISALLOW_TAIL_CALLS";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // Valid hints for the abstract operation OrdinaryToPrimitive,
@@ -854,51 +859,51 @@ enum class ToPrimitiveHint { kDefault, kNumber, kString };
 
 // Defines specifics about arguments object or rest parameter creation.
 enum class CreateArgumentsType : uint8_t {
-  kMappedArguments,
-  kUnmappedArguments,
-  kRestParameter
+    kMappedArguments,
+    kUnmappedArguments,
+    kRestParameter
 };
 
 inline size_t hash_value(CreateArgumentsType type) {
-  return bit_cast<uint8_t>(type);
+    return bit_cast<uint8_t>(type);
 }
 
 inline std::ostream& operator<<(std::ostream& os, CreateArgumentsType type) {
-  switch (type) {
+    switch (type) {
     case CreateArgumentsType::kMappedArguments:
-      return os << "MAPPED_ARGUMENTS";
+        return os << "MAPPED_ARGUMENTS";
     case CreateArgumentsType::kUnmappedArguments:
-      return os << "UNMAPPED_ARGUMENTS";
+        return os << "UNMAPPED_ARGUMENTS";
     case CreateArgumentsType::kRestParameter:
-      return os << "REST_PARAMETER";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "REST_PARAMETER";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // Used to specify if a macro instruction must perform a smi check on tagged
 // values.
 enum SmiCheckType {
-  DONT_DO_SMI_CHECK,
-  DO_SMI_CHECK
+    DONT_DO_SMI_CHECK,
+    DO_SMI_CHECK
 };
 
 enum ScopeType : uint8_t {
-  EVAL_SCOPE,      // The top-level scope for an eval source.
-  FUNCTION_SCOPE,  // The top-level scope for a function.
-  MODULE_SCOPE,    // The scope introduced by a module literal
-  SCRIPT_SCOPE,    // The top-level scope for a script or a top-level eval.
-  CATCH_SCOPE,     // The scope introduced by catch.
-  BLOCK_SCOPE,     // The scope introduced by a new block.
-  WITH_SCOPE       // The scope introduced by with.
+    EVAL_SCOPE,      // The top-level scope for an eval source.
+    FUNCTION_SCOPE,  // The top-level scope for a function.
+    MODULE_SCOPE,    // The scope introduced by a module literal
+    SCRIPT_SCOPE,    // The top-level scope for a script or a top-level eval.
+    CATCH_SCOPE,     // The scope introduced by catch.
+    BLOCK_SCOPE,     // The scope introduced by a new block.
+    WITH_SCOPE       // The scope introduced by with.
 };
 
 // AllocationSiteMode controls whether allocations are tracked by an allocation
 // site.
 enum AllocationSiteMode {
-  DONT_TRACK_ALLOCATION_SITE,
-  TRACK_ALLOCATION_SITE,
-  LAST_ALLOCATION_SITE_MODE = TRACK_ALLOCATION_SITE
+    DONT_TRACK_ALLOCATION_SITE,
+    TRACK_ALLOCATION_SITE,
+    LAST_ALLOCATION_SITE_MODE = TRACK_ALLOCATION_SITE
 };
 
 // The mips architecture prior to revision 5 has inverted encoding for sNaN.
@@ -929,109 +934,109 @@ const double kMaxSafeInteger = 9007199254740991.0;  // 2^53-1
 
 // The order of this enum has to be kept in sync with the predicates below.
 enum VariableMode : uint8_t {
-  // User declared variables:
-  VAR,  // declared via 'var', and 'function' declarations
+    // User declared variables:
+    VAR,  // declared via 'var', and 'function' declarations
 
-  LET,  // declared via 'let' declarations (first lexical)
+    LET,  // declared via 'let' declarations (first lexical)
 
-  CONST,  // declared via 'const' declarations (last lexical)
+    CONST,  // declared via 'const' declarations (last lexical)
 
-  // Variables introduced by the compiler:
-  TEMPORARY,  // temporary variables (not user-visible), stack-allocated
-              // unless the scope as a whole has forced context allocation
+    // Variables introduced by the compiler:
+    TEMPORARY,  // temporary variables (not user-visible), stack-allocated
+    // unless the scope as a whole has forced context allocation
 
-  DYNAMIC,  // always require dynamic lookup (we don't know
-            // the declaration)
+    DYNAMIC,  // always require dynamic lookup (we don't know
+    // the declaration)
 
-  DYNAMIC_GLOBAL,  // requires dynamic lookup, but we know that the
-                   // variable is global unless it has been shadowed
-                   // by an eval-introduced variable
+    DYNAMIC_GLOBAL,  // requires dynamic lookup, but we know that the
+    // variable is global unless it has been shadowed
+    // by an eval-introduced variable
 
-  DYNAMIC_LOCAL,  // requires dynamic lookup, but we know that the
-                  // variable is local and where it is unless it
-                  // has been shadowed by an eval-introduced
-                  // variable
+    DYNAMIC_LOCAL,  // requires dynamic lookup, but we know that the
+    // variable is local and where it is unless it
+    // has been shadowed by an eval-introduced
+    // variable
 
-  kLastVariableMode = DYNAMIC_LOCAL
+    kLastVariableMode = DYNAMIC_LOCAL
 };
 
 // Printing support
 #ifdef DEBUG
 inline const char* VariableMode2String(VariableMode mode) {
-  switch (mode) {
+    switch (mode) {
     case VAR:
-      return "VAR";
+        return "VAR";
     case LET:
-      return "LET";
+        return "LET";
     case CONST:
-      return "CONST";
+        return "CONST";
     case DYNAMIC:
-      return "DYNAMIC";
+        return "DYNAMIC";
     case DYNAMIC_GLOBAL:
-      return "DYNAMIC_GLOBAL";
+        return "DYNAMIC_GLOBAL";
     case DYNAMIC_LOCAL:
-      return "DYNAMIC_LOCAL";
+        return "DYNAMIC_LOCAL";
     case TEMPORARY:
-      return "TEMPORARY";
-  }
-  UNREACHABLE();
-  return NULL;
+        return "TEMPORARY";
+    }
+    UNREACHABLE();
+    return NULL;
 }
 #endif
 
 enum VariableKind : uint8_t {
-  NORMAL_VARIABLE,
-  FUNCTION_VARIABLE,
-  THIS_VARIABLE,
-  SLOPPY_FUNCTION_NAME_VARIABLE,
-  kLastKind = SLOPPY_FUNCTION_NAME_VARIABLE
+    NORMAL_VARIABLE,
+    FUNCTION_VARIABLE,
+    THIS_VARIABLE,
+    SLOPPY_FUNCTION_NAME_VARIABLE,
+    kLastKind = SLOPPY_FUNCTION_NAME_VARIABLE
 };
 
 inline bool IsDynamicVariableMode(VariableMode mode) {
-  return mode >= DYNAMIC && mode <= DYNAMIC_LOCAL;
+    return mode >= DYNAMIC && mode <= DYNAMIC_LOCAL;
 }
 
 
 inline bool IsDeclaredVariableMode(VariableMode mode) {
-  STATIC_ASSERT(VAR == 0);  // Implies that mode >= VAR.
-  return mode <= CONST;
+    STATIC_ASSERT(VAR == 0);  // Implies that mode >= VAR.
+    return mode <= CONST;
 }
 
 
 inline bool IsLexicalVariableMode(VariableMode mode) {
-  return mode >= LET && mode <= CONST;
+    return mode >= LET && mode <= CONST;
 }
 
 enum VariableLocation : uint8_t {
-  // Before and during variable allocation, a variable whose location is
-  // not yet determined.  After allocation, a variable looked up as a
-  // property on the global object (and possibly absent).  name() is the
-  // variable name, index() is invalid.
-  UNALLOCATED,
+    // Before and during variable allocation, a variable whose location is
+    // not yet determined.  After allocation, a variable looked up as a
+    // property on the global object (and possibly absent).  name() is the
+    // variable name, index() is invalid.
+    UNALLOCATED,
 
-  // A slot in the parameter section on the stack.  index() is the
-  // parameter index, counting left-to-right.  The receiver is index -1;
-  // the first parameter is index 0.
-  PARAMETER,
+    // A slot in the parameter section on the stack.  index() is the
+    // parameter index, counting left-to-right.  The receiver is index -1;
+    // the first parameter is index 0.
+    PARAMETER,
 
-  // A slot in the local section on the stack.  index() is the variable
-  // index in the stack frame, starting at 0.
-  LOCAL,
+    // A slot in the local section on the stack.  index() is the variable
+    // index in the stack frame, starting at 0.
+    LOCAL,
 
-  // An indexed slot in a heap context.  index() is the variable index in
-  // the context object on the heap, starting at 0.  scope() is the
-  // corresponding scope.
-  CONTEXT,
+    // An indexed slot in a heap context.  index() is the variable index in
+    // the context object on the heap, starting at 0.  scope() is the
+    // corresponding scope.
+    CONTEXT,
 
-  // A named slot in a heap context.  name() is the variable name in the
-  // context object on the heap, with lookup starting at the current
-  // context.  index() is invalid.
-  LOOKUP,
+    // A named slot in a heap context.  name() is the variable name in the
+    // context object on the heap, with lookup starting at the current
+    // context.  index() is invalid.
+    LOOKUP,
 
-  // A named slot in a module's export table.
-  MODULE,
+    // A named slot in a module's export table.
+    MODULE,
 
-  kLastVariableLocation = MODULE
+    kLastVariableLocation = MODULE
 };
 
 // ES6 Draft Rev3 10.2 specifies declarative environment records with mutable
@@ -1076,173 +1081,183 @@ enum ParseErrorType { kSyntaxError = 0, kReferenceError = 1 };
 
 
 enum MinusZeroMode {
-  TREAT_MINUS_ZERO_AS_ZERO,
-  FAIL_ON_MINUS_ZERO
+    TREAT_MINUS_ZERO_AS_ZERO,
+    FAIL_ON_MINUS_ZERO
 };
 
 
 enum Signedness { kSigned, kUnsigned };
 
 enum FunctionKind : uint16_t {
-  kNormalFunction = 0,
-  kArrowFunction = 1 << 0,
-  kGeneratorFunction = 1 << 1,
-  kConciseMethod = 1 << 2,
-  kConciseGeneratorMethod = kGeneratorFunction | kConciseMethod,
-  kDefaultConstructor = 1 << 3,
-  kDerivedConstructor = 1 << 4,
-  kBaseConstructor = 1 << 5,
-  kGetterFunction = 1 << 6,
-  kSetterFunction = 1 << 7,
-  kAsyncFunction = 1 << 8,
-  kModule = 1 << 9,
-  kAccessorFunction = kGetterFunction | kSetterFunction,
-  kDefaultBaseConstructor = kDefaultConstructor | kBaseConstructor,
-  kDefaultDerivedConstructor = kDefaultConstructor | kDerivedConstructor,
-  kClassConstructor =
-      kBaseConstructor | kDerivedConstructor | kDefaultConstructor,
-  kAsyncArrowFunction = kArrowFunction | kAsyncFunction,
-  kAsyncConciseMethod = kAsyncFunction | kConciseMethod,
+    kNormalFunction = 0,
+    kArrowFunction = 1 << 0,
+    kGeneratorFunction = 1 << 1,
+    kConciseMethod = 1 << 2,
+    kConciseGeneratorMethod = kGeneratorFunction | kConciseMethod,
+    kDefaultConstructor = 1 << 3,
+    kDerivedConstructor = 1 << 4,
+    kBaseConstructor = 1 << 5,
+    kGetterFunction = 1 << 6,
+    kSetterFunction = 1 << 7,
+    kAsyncFunction = 1 << 8,
+    kModule = 1 << 9,
+    kAccessorFunction = kGetterFunction | kSetterFunction,
+    kDefaultBaseConstructor = kDefaultConstructor | kBaseConstructor,
+    kDefaultDerivedConstructor = kDefaultConstructor | kDerivedConstructor,
+    kClassConstructor =
+        kBaseConstructor | kDerivedConstructor | kDefaultConstructor,
+    kAsyncArrowFunction = kArrowFunction | kAsyncFunction,
+    kAsyncConciseMethod = kAsyncFunction | kConciseMethod,
 
-  // https://tc39.github.io/proposal-async-iteration/
-  kAsyncConciseGeneratorMethod = kAsyncFunction | kConciseGeneratorMethod,
-  kAsyncGeneratorFunction = kAsyncFunction | kGeneratorFunction
+    // https://tc39.github.io/proposal-async-iteration/
+    kAsyncConciseGeneratorMethod = kAsyncFunction | kConciseGeneratorMethod,
+    kAsyncGeneratorFunction = kAsyncFunction | kGeneratorFunction
 };
 
 inline bool IsValidFunctionKind(FunctionKind kind) {
-  return kind == FunctionKind::kNormalFunction ||
-         kind == FunctionKind::kArrowFunction ||
-         kind == FunctionKind::kGeneratorFunction ||
-         kind == FunctionKind::kModule ||
-         kind == FunctionKind::kConciseMethod ||
-         kind == FunctionKind::kConciseGeneratorMethod ||
-         kind == FunctionKind::kGetterFunction ||
-         kind == FunctionKind::kSetterFunction ||
-         kind == FunctionKind::kAccessorFunction ||
-         kind == FunctionKind::kDefaultBaseConstructor ||
-         kind == FunctionKind::kDefaultDerivedConstructor ||
-         kind == FunctionKind::kBaseConstructor ||
-         kind == FunctionKind::kDerivedConstructor ||
-         kind == FunctionKind::kAsyncFunction ||
-         kind == FunctionKind::kAsyncArrowFunction ||
-         kind == FunctionKind::kAsyncConciseMethod ||
-         kind == FunctionKind::kAsyncConciseGeneratorMethod ||
-         kind == FunctionKind::kAsyncGeneratorFunction;
+    return kind == FunctionKind::kNormalFunction ||
+           kind == FunctionKind::kArrowFunction ||
+           kind == FunctionKind::kGeneratorFunction ||
+           kind == FunctionKind::kModule ||
+           kind == FunctionKind::kConciseMethod ||
+           kind == FunctionKind::kConciseGeneratorMethod ||
+           kind == FunctionKind::kGetterFunction ||
+           kind == FunctionKind::kSetterFunction ||
+           kind == FunctionKind::kAccessorFunction ||
+           kind == FunctionKind::kDefaultBaseConstructor ||
+           kind == FunctionKind::kDefaultDerivedConstructor ||
+           kind == FunctionKind::kBaseConstructor ||
+           kind == FunctionKind::kDerivedConstructor ||
+           kind == FunctionKind::kAsyncFunction ||
+           kind == FunctionKind::kAsyncArrowFunction ||
+           kind == FunctionKind::kAsyncConciseMethod ||
+           kind == FunctionKind::kAsyncConciseGeneratorMethod ||
+           kind == FunctionKind::kAsyncGeneratorFunction;
 }
 
 
 inline bool IsArrowFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kArrowFunction) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kArrowFunction) != 0;
 }
 
 
 inline bool IsGeneratorFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kGeneratorFunction) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kGeneratorFunction) != 0;
 }
 
 inline bool IsModule(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kModule) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kModule) != 0;
 }
 
 inline bool IsAsyncFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kAsyncFunction) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kAsyncFunction) != 0;
 }
 
 inline bool IsAsyncGeneratorFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  const FunctionKind kMask = FunctionKind::kAsyncGeneratorFunction;
-  return (kind & kMask) == kMask;
+    DCHECK(IsValidFunctionKind(kind));
+    const FunctionKind kMask = FunctionKind::kAsyncGeneratorFunction;
+    return (kind & kMask) == kMask;
 }
 
 inline bool IsResumableFunction(FunctionKind kind) {
-  return IsGeneratorFunction(kind) || IsAsyncFunction(kind) || IsModule(kind);
+    return IsGeneratorFunction(kind) || IsAsyncFunction(kind) || IsModule(kind);
 }
 
 inline bool IsConciseMethod(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kConciseMethod) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kConciseMethod) != 0;
 }
 
 inline bool IsGetterFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kGetterFunction) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kGetterFunction) != 0;
 }
 
 inline bool IsSetterFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kSetterFunction) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kSetterFunction) != 0;
 }
 
 inline bool IsAccessorFunction(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kAccessorFunction) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kAccessorFunction) != 0;
 }
 
 
 inline bool IsDefaultConstructor(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kDefaultConstructor) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kDefaultConstructor) != 0;
 }
 
 
 inline bool IsBaseConstructor(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kBaseConstructor) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kBaseConstructor) != 0;
 }
 
 inline bool IsDerivedConstructor(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kDerivedConstructor) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kDerivedConstructor) != 0;
 }
 
 
 inline bool IsClassConstructor(FunctionKind kind) {
-  DCHECK(IsValidFunctionKind(kind));
-  return (kind & FunctionKind::kClassConstructor) != 0;
+    DCHECK(IsValidFunctionKind(kind));
+    return (kind & FunctionKind::kClassConstructor) != 0;
 }
 
 inline bool IsConstructable(FunctionKind kind) {
-  if (IsAccessorFunction(kind)) return false;
-  if (IsConciseMethod(kind)) return false;
-  if (IsArrowFunction(kind)) return false;
-  if (IsGeneratorFunction(kind)) return false;
-  if (IsAsyncFunction(kind)) return false;
-  return true;
+    if (IsAccessorFunction(kind)) {
+        return false;
+    }
+    if (IsConciseMethod(kind)) {
+        return false;
+    }
+    if (IsArrowFunction(kind)) {
+        return false;
+    }
+    if (IsGeneratorFunction(kind)) {
+        return false;
+    }
+    if (IsAsyncFunction(kind)) {
+        return false;
+    }
+    return true;
 }
 
 enum class InterpreterPushArgsMode : unsigned {
-  kJSFunction,
-  kWithFinalSpread,
-  kOther
+    kJSFunction,
+    kWithFinalSpread,
+    kOther
 };
 
 inline size_t hash_value(InterpreterPushArgsMode mode) {
-  return bit_cast<unsigned>(mode);
+    return bit_cast<unsigned>(mode);
 }
 
 inline std::ostream& operator<<(std::ostream& os,
                                 InterpreterPushArgsMode mode) {
-  switch (mode) {
+    switch (mode) {
     case InterpreterPushArgsMode::kJSFunction:
-      return os << "JSFunction";
+        return os << "JSFunction";
     case InterpreterPushArgsMode::kWithFinalSpread:
-      return os << "WithFinalSpread";
+        return os << "WithFinalSpread";
     case InterpreterPushArgsMode::kOther:
-      return os << "Other";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "Other";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 inline uint32_t ObjectHash(Address address) {
-  // All objects are at least pointer aligned, so we can remove the trailing
-  // zeros.
-  return static_cast<uint32_t>(bit_cast<uintptr_t>(address) >>
-                               kPointerSizeLog2);
+    // All objects are at least pointer aligned, so we can remove the trailing
+    // zeros.
+    return static_cast<uint32_t>(bit_cast<uintptr_t>(address) >>
+                                 kPointerSizeLog2);
 }
 
 // Type feedback is encoded in such a way that, we can combine the feedback
@@ -1256,15 +1271,15 @@ inline uint32_t ObjectHash(Address address) {
 // deopts. We collect Number only because crankshaft does not handle all
 // cases of oddballs.
 class BinaryOperationFeedback {
- public:
-  enum {
-    kNone = 0x0,
-    kSignedSmall = 0x1,
-    kNumber = 0x3,
-    kNumberOrOddball = 0x7,
-    kString = 0x8,
-    kAny = 0x1F
-  };
+    public:
+        enum {
+            kNone = 0x0,
+            kSignedSmall = 0x1,
+            kNumber = 0x3,
+            kNumberOrOddball = 0x7,
+            kString = 0x8,
+            kAny = 0x1F
+        };
 };
 
 // Type feedback is encoded in such a way that, we can combine the feedback
@@ -1275,147 +1290,147 @@ class BinaryOperationFeedback {
 //                        kReceiver -> kAny
 // TODO(epertoso): consider unifying this with BinaryOperationFeedback.
 class CompareOperationFeedback {
- public:
-  enum {
-    kNone = 0x00,
-    kSignedSmall = 0x01,
-    kNumber = 0x3,
-    kNumberOrOddball = 0x7,
-    kInternalizedString = 0x8,
-    kString = 0x18,
-    kReceiver = 0x20,
-    kAny = 0x7F
-  };
+    public:
+        enum {
+            kNone = 0x00,
+            kSignedSmall = 0x01,
+            kNumber = 0x3,
+            kNumberOrOddball = 0x7,
+            kInternalizedString = 0x8,
+            kString = 0x18,
+            kReceiver = 0x20,
+            kAny = 0x7F
+        };
 };
 
 enum class UnicodeEncoding : uint8_t {
-  // Different unicode encodings in a |word32|:
-  UTF16,  // hi 16bits -> trailing surrogate or 0, low 16bits -> lead surrogate
-  UTF32,  // full UTF32 code unit / Unicode codepoint
+    // Different unicode encodings in a |word32|:
+    UTF16,  // hi 16bits -> trailing surrogate or 0, low 16bits -> lead surrogate
+    UTF32,  // full UTF32 code unit / Unicode codepoint
 };
 
 inline size_t hash_value(UnicodeEncoding encoding) {
-  return static_cast<uint8_t>(encoding);
+    return static_cast<uint8_t>(encoding);
 }
 
 inline std::ostream& operator<<(std::ostream& os, UnicodeEncoding encoding) {
-  switch (encoding) {
+    switch (encoding) {
     case UnicodeEncoding::UTF16:
-      return os << "UTF16";
+        return os << "UTF16";
     case UnicodeEncoding::UTF32:
-      return os << "UTF32";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "UTF32";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 enum class IterationKind { kKeys, kValues, kEntries };
 
 inline std::ostream& operator<<(std::ostream& os, IterationKind kind) {
-  switch (kind) {
+    switch (kind) {
     case IterationKind::kKeys:
-      return os << "IterationKind::kKeys";
+        return os << "IterationKind::kKeys";
     case IterationKind::kValues:
-      return os << "IterationKind::kValues";
+        return os << "IterationKind::kValues";
     case IterationKind::kEntries:
-      return os << "IterationKind::kEntries";
-  }
-  UNREACHABLE();
-  return os;
+        return os << "IterationKind::kEntries";
+    }
+    UNREACHABLE();
+    return os;
 }
 
 // Flags for the runtime function kDefineDataPropertyInLiteral. A property can
 // be enumerable or not, and, in case of functions, the function name
 // can be set or not.
 enum class DataPropertyInLiteralFlag {
-  kNoFlags = 0,
-  kDontEnum = 1 << 0,
-  kSetFunctionName = 1 << 1
+    kNoFlags = 0,
+    kDontEnum = 1 << 0,
+    kSetFunctionName = 1 << 1
 };
 typedef base::Flags<DataPropertyInLiteralFlag> DataPropertyInLiteralFlags;
 DEFINE_OPERATORS_FOR_FLAGS(DataPropertyInLiteralFlags)
 
 enum ExternalArrayType {
-  kExternalInt8Array = 1,
-  kExternalUint8Array,
-  kExternalInt16Array,
-  kExternalUint16Array,
-  kExternalInt32Array,
-  kExternalUint32Array,
-  kExternalFloat32Array,
-  kExternalFloat64Array,
-  kExternalUint8ClampedArray,
+    kExternalInt8Array = 1,
+    kExternalUint8Array,
+    kExternalInt16Array,
+    kExternalUint16Array,
+    kExternalInt32Array,
+    kExternalUint32Array,
+    kExternalFloat32Array,
+    kExternalFloat64Array,
+    kExternalUint8ClampedArray,
 };
 
 // Static information used by SuspendGenerator bytecode & GeneratorStore, in
 // order to determine where to store bytecode offset in generator.
 enum class SuspendFlags {
-  kYield = 0,
-  kYieldStar = 1,
-  kAwait = 2,
-  kSuspendTypeMask = 3,
+    kYield = 0,
+    kYieldStar = 1,
+    kAwait = 2,
+    kSuspendTypeMask = 3,
 
-  kGenerator = 0 << 2,
-  kAsyncGenerator = 1 << 2,
-  kGeneratorTypeMask = 1 << 2,
+    kGenerator = 0 << 2,
+    kAsyncGenerator = 1 << 2,
+    kGeneratorTypeMask = 1 << 2,
 
-  kBitWidth = 3,
+    kBitWidth = 3,
 
-  // Aliases
-  kGeneratorYield = kGenerator | kYield,
-  kGeneratorYieldStar = kGenerator | kYieldStar,
-  kGeneratorAwait = kGenerator | kAwait,
-  kAsyncGeneratorYield = kAsyncGenerator | kYield,
-  kAsyncGeneratorYieldStar = kAsyncGenerator | kYieldStar,
-  kAsyncGeneratorAwait = kAsyncGenerator | kAwait
+    // Aliases
+    kGeneratorYield = kGenerator | kYield,
+    kGeneratorYieldStar = kGenerator | kYieldStar,
+    kGeneratorAwait = kGenerator | kAwait,
+    kAsyncGeneratorYield = kAsyncGenerator | kYield,
+    kAsyncGeneratorYieldStar = kAsyncGenerator | kYieldStar,
+    kAsyncGeneratorAwait = kAsyncGenerator | kAwait
 };
 
 inline constexpr SuspendFlags operator&(SuspendFlags lhs, SuspendFlags rhs) {
-  return static_cast<SuspendFlags>(static_cast<uint8_t>(lhs) &
-                                   static_cast<uint8_t>(rhs));
+    return static_cast<SuspendFlags>(static_cast<uint8_t>(lhs) &
+                                     static_cast<uint8_t>(rhs));
 }
 
 inline constexpr SuspendFlags operator|(SuspendFlags lhs, SuspendFlags rhs) {
-  return static_cast<SuspendFlags>(static_cast<uint8_t>(lhs) |
-                                   static_cast<uint8_t>(rhs));
+    return static_cast<SuspendFlags>(static_cast<uint8_t>(lhs) |
+                                     static_cast<uint8_t>(rhs));
 }
 
 inline SuspendFlags& operator|=(SuspendFlags& lhs, SuspendFlags rhs) {
-  lhs = lhs | rhs;
-  return lhs;
+    lhs = lhs | rhs;
+    return lhs;
 }
 
 inline SuspendFlags operator~(SuspendFlags lhs) {
-  return static_cast<SuspendFlags>(~static_cast<uint8_t>(lhs));
+    return static_cast<SuspendFlags>(~static_cast<uint8_t>(lhs));
 }
 
 inline const char* SuspendTypeFor(SuspendFlags flags) {
-  switch (flags & SuspendFlags::kSuspendTypeMask) {
+    switch (flags & SuspendFlags::kSuspendTypeMask) {
     case SuspendFlags::kYield:
-      return "yield";
+        return "yield";
     case SuspendFlags::kYieldStar:
-      return "yield*";
+        return "yield*";
     case SuspendFlags::kAwait:
-      return "await";
+        return "await";
     default:
-      break;
-  }
-  UNREACHABLE();
-  return "";
+        break;
+    }
+    UNREACHABLE();
+    return "";
 }
 
 struct AssemblerDebugInfo {
-  AssemblerDebugInfo(const char* name, const char* file, int line)
-      : name(name), file(file), line(line) {}
-  const char* name;
-  const char* file;
-  int line;
+    AssemblerDebugInfo(const char* name, const char* file, int line)
+        : name(name), file(file), line(line) {}
+    const char* name;
+    const char* file;
+    int line;
 };
 
 inline std::ostream& operator<<(std::ostream& os,
                                 const AssemblerDebugInfo& info) {
-  os << "(" << info.name << ":" << info.file << ":" << info.line << ")";
-  return os;
+    os << "(" << info.name << ":" << info.file << ":" << info.line << ")";
+    return os;
 }
 
 }  // namespace internal

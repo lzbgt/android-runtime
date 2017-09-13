@@ -29,14 +29,14 @@ namespace bits {
 // CountPopulation32(value) returns the number of bits set in |value|.
 inline unsigned CountPopulation32(uint32_t value) {
 #if V8_HAS_BUILTIN_POPCOUNT
-  return __builtin_popcount(value);
+    return __builtin_popcount(value);
 #else
-  value = ((value >> 1) & 0x55555555) + (value & 0x55555555);
-  value = ((value >> 2) & 0x33333333) + (value & 0x33333333);
-  value = ((value >> 4) & 0x0f0f0f0f) + (value & 0x0f0f0f0f);
-  value = ((value >> 8) & 0x00ff00ff) + (value & 0x00ff00ff);
-  value = ((value >> 16) & 0x0000ffff) + (value & 0x0000ffff);
-  return static_cast<unsigned>(value);
+    value = ((value >> 1) & 0x55555555) + (value & 0x55555555);
+    value = ((value >> 2) & 0x33333333) + (value & 0x33333333);
+    value = ((value >> 4) & 0x0f0f0f0f) + (value & 0x0f0f0f0f);
+    value = ((value >> 8) & 0x00ff00ff) + (value & 0x00ff00ff);
+    value = ((value >> 16) & 0x0000ffff) + (value & 0x0000ffff);
+    return static_cast<unsigned>(value);
 #endif
 }
 
@@ -44,22 +44,22 @@ inline unsigned CountPopulation32(uint32_t value) {
 // CountPopulation64(value) returns the number of bits set in |value|.
 inline unsigned CountPopulation64(uint64_t value) {
 #if V8_HAS_BUILTIN_POPCOUNT
-  return __builtin_popcountll(value);
+    return __builtin_popcountll(value);
 #else
-  return CountPopulation32(static_cast<uint32_t>(value)) +
-         CountPopulation32(static_cast<uint32_t>(value >> 32));
+    return CountPopulation32(static_cast<uint32_t>(value)) +
+           CountPopulation32(static_cast<uint32_t>(value >> 32));
 #endif
 }
 
 
 // Overloaded versions of CountPopulation32/64.
 inline unsigned CountPopulation(uint32_t value) {
-  return CountPopulation32(value);
+    return CountPopulation32(value);
 }
 
 
 inline unsigned CountPopulation(uint64_t value) {
-  return CountPopulation64(value);
+    return CountPopulation64(value);
 }
 
 
@@ -67,18 +67,20 @@ inline unsigned CountPopulation(uint64_t value) {
 // significant 1 bit in |value| if |value| is non-zero, otherwise it returns 32.
 inline unsigned CountLeadingZeros32(uint32_t value) {
 #if V8_HAS_BUILTIN_CLZ
-  return value ? __builtin_clz(value) : 32;
+    return value ? __builtin_clz(value) : 32;
 #elif V8_CC_MSVC
-  unsigned long result;  // NOLINT(runtime/int)
-  if (!_BitScanReverse(&result, value)) return 32;
-  return static_cast<unsigned>(31 - result);
+    unsigned long result;  // NOLINT(runtime/int)
+    if (!_BitScanReverse(&result, value)) {
+        return 32;
+    }
+    return static_cast<unsigned>(31 - result);
 #else
-  value = value | (value >> 1);
-  value = value | (value >> 2);
-  value = value | (value >> 4);
-  value = value | (value >> 8);
-  value = value | (value >> 16);
-  return CountPopulation32(~value);
+    value = value | (value >> 1);
+    value = value | (value >> 2);
+    value = value | (value >> 4);
+    value = value | (value >> 8);
+    value = value | (value >> 16);
+    return CountPopulation32(~value);
 #endif
 }
 
@@ -87,15 +89,15 @@ inline unsigned CountLeadingZeros32(uint32_t value) {
 // significant 1 bit in |value| if |value| is non-zero, otherwise it returns 64.
 inline unsigned CountLeadingZeros64(uint64_t value) {
 #if V8_HAS_BUILTIN_CLZ
-  return value ? __builtin_clzll(value) : 64;
+    return value ? __builtin_clzll(value) : 64;
 #else
-  value = value | (value >> 1);
-  value = value | (value >> 2);
-  value = value | (value >> 4);
-  value = value | (value >> 8);
-  value = value | (value >> 16);
-  value = value | (value >> 32);
-  return CountPopulation64(~value);
+    value = value | (value >> 1);
+    value = value | (value >> 2);
+    value = value | (value >> 4);
+    value = value | (value >> 8);
+    value = value | (value >> 16);
+    value = value | (value >> 32);
+    return CountPopulation64(~value);
 #endif
 }
 
@@ -103,14 +105,14 @@ inline unsigned CountLeadingZeros64(uint64_t value) {
 // ReverseBits(value) returns |value| in reverse bit order.
 template <typename T>
 T ReverseBits(T value) {
-  DCHECK((sizeof(value) == 1) || (sizeof(value) == 2) || (sizeof(value) == 4) ||
-         (sizeof(value) == 8));
-  T result = 0;
-  for (unsigned i = 0; i < (sizeof(value) * 8); i++) {
-    result = (result << 1) | (value & 1);
-    value >>= 1;
-  }
-  return result;
+    DCHECK((sizeof(value) == 1) || (sizeof(value) == 2) || (sizeof(value) == 4) ||
+           (sizeof(value) == 8));
+    T result = 0;
+    for (unsigned i = 0; i < (sizeof(value) * 8); i++) {
+        result = (result << 1) | (value & 1);
+        value >>= 1;
+    }
+    return result;
 }
 
 // CountTrailingZeros32(value) returns the number of zero bits preceding the
@@ -118,17 +120,21 @@ T ReverseBits(T value) {
 // returns 32.
 inline unsigned CountTrailingZeros32(uint32_t value) {
 #if V8_HAS_BUILTIN_CTZ
-  return value ? __builtin_ctz(value) : 32;
+    return value ? __builtin_ctz(value) : 32;
 #elif V8_CC_MSVC
-  unsigned long result;  // NOLINT(runtime/int)
-  if (!_BitScanForward(&result, value)) return 32;
-  return static_cast<unsigned>(result);
+    unsigned long result;  // NOLINT(runtime/int)
+    if (!_BitScanForward(&result, value)) {
+        return 32;
+    }
+    return static_cast<unsigned>(result);
 #else
-  if (value == 0) return 32;
-  unsigned count = 0;
-  for (value ^= value - 1; value >>= 1; ++count) {
-  }
-  return count;
+    if (value == 0) {
+        return 32;
+    }
+    unsigned count = 0;
+    for (value ^= value - 1; value >>= 1; ++count) {
+    }
+    return count;
 #endif
 }
 
@@ -138,34 +144,36 @@ inline unsigned CountTrailingZeros32(uint32_t value) {
 // returns 64.
 inline unsigned CountTrailingZeros64(uint64_t value) {
 #if V8_HAS_BUILTIN_CTZ
-  return value ? __builtin_ctzll(value) : 64;
+    return value ? __builtin_ctzll(value) : 64;
 #else
-  if (value == 0) return 64;
-  unsigned count = 0;
-  for (value ^= value - 1; value >>= 1; ++count) {
-  }
-  return count;
+    if (value == 0) {
+        return 64;
+    }
+    unsigned count = 0;
+    for (value ^= value - 1; value >>= 1; ++count) {
+    }
+    return count;
 #endif
 }
 
 // Overloaded versions of CountTrailingZeros32/64.
 inline unsigned CountTrailingZeros(uint32_t value) {
-  return CountTrailingZeros32(value);
+    return CountTrailingZeros32(value);
 }
 
 inline unsigned CountTrailingZeros(uint64_t value) {
-  return CountTrailingZeros64(value);
+    return CountTrailingZeros64(value);
 }
 
 // Returns true iff |value| is a power of 2.
 constexpr inline bool IsPowerOfTwo32(uint32_t value) {
-  return value && !(value & (value - 1));
+    return value && !(value & (value - 1));
 }
 
 
 // Returns true iff |value| is a power of 2.
 constexpr inline bool IsPowerOfTwo64(uint64_t value) {
-  return value && !(value & (value - 1));
+    return value && !(value & (value - 1));
 }
 
 // RoundUpToPowerOfTwo32(value) returns the smallest power of two which is
@@ -182,35 +190,47 @@ V8_BASE_EXPORT uint64_t RoundUpToPowerOfTwo64(uint64_t value);
 // less than or equal to |value|. If you pass in a |value| that is already a
 // power of two, it is returned as is.
 inline uint32_t RoundDownToPowerOfTwo32(uint32_t value) {
-  if (value > 0x80000000u) return 0x80000000u;
-  uint32_t result = RoundUpToPowerOfTwo32(value);
-  if (result > value) result >>= 1;
-  return result;
+    if (value > 0x80000000u) {
+        return 0x80000000u;
+    }
+    uint32_t result = RoundUpToPowerOfTwo32(value);
+    if (result > value) {
+        result >>= 1;
+    }
+    return result;
 }
 
 
 // Precondition: 0 <= shift < 32
 inline uint32_t RotateRight32(uint32_t value, uint32_t shift) {
-  if (shift == 0) return value;
-  return (value >> shift) | (value << (32 - shift));
+    if (shift == 0) {
+        return value;
+    }
+    return (value >> shift) | (value << (32 - shift));
 }
 
 // Precondition: 0 <= shift < 32
 inline uint32_t RotateLeft32(uint32_t value, uint32_t shift) {
-  if (shift == 0) return value;
-  return (value << shift) | (value >> (32 - shift));
+    if (shift == 0) {
+        return value;
+    }
+    return (value << shift) | (value >> (32 - shift));
 }
 
 // Precondition: 0 <= shift < 64
 inline uint64_t RotateRight64(uint64_t value, uint64_t shift) {
-  if (shift == 0) return value;
-  return (value >> shift) | (value << (64 - shift));
+    if (shift == 0) {
+        return value;
+    }
+    return (value >> shift) | (value << (64 - shift));
 }
 
 // Precondition: 0 <= shift < 64
 inline uint64_t RotateLeft64(uint64_t value, uint64_t shift) {
-  if (shift == 0) return value;
-  return (value << shift) | (value >> (64 - shift));
+    if (shift == 0) {
+        return value;
+    }
+    return (value << shift) | (value >> (64 - shift));
 }
 
 
@@ -219,11 +239,11 @@ inline uint64_t RotateLeft64(uint64_t value, uint64_t shift) {
 // returns true if the signed summation resulted in an overflow.
 inline bool SignedAddOverflow32(int32_t lhs, int32_t rhs, int32_t* val) {
 #if V8_HAS_BUILTIN_SADD_OVERFLOW
-  return __builtin_sadd_overflow(lhs, rhs, val);
+    return __builtin_sadd_overflow(lhs, rhs, val);
 #else
-  uint32_t res = static_cast<uint32_t>(lhs) + static_cast<uint32_t>(rhs);
-  *val = bit_cast<int32_t>(res);
-  return ((res ^ lhs) & (res ^ rhs) & (1U << 31)) != 0;
+    uint32_t res = static_cast<uint32_t>(lhs) + static_cast<uint32_t>(rhs);
+    *val = bit_cast<int32_t>(res);
+    return ((res ^ lhs) & (res ^ rhs) & (1U << 31)) != 0;
 #endif
 }
 
@@ -233,11 +253,11 @@ inline bool SignedAddOverflow32(int32_t lhs, int32_t rhs, int32_t* val) {
 // returns true if the signed subtraction resulted in an overflow.
 inline bool SignedSubOverflow32(int32_t lhs, int32_t rhs, int32_t* val) {
 #if V8_HAS_BUILTIN_SSUB_OVERFLOW
-  return __builtin_ssub_overflow(lhs, rhs, val);
+    return __builtin_ssub_overflow(lhs, rhs, val);
 #else
-  uint32_t res = static_cast<uint32_t>(lhs) - static_cast<uint32_t>(rhs);
-  *val = bit_cast<int32_t>(res);
-  return ((res ^ lhs) & (res ^ ~rhs) & (1U << 31)) != 0;
+    uint32_t res = static_cast<uint32_t>(lhs) - static_cast<uint32_t>(rhs);
+    *val = bit_cast<int32_t>(res);
+    return ((res ^ lhs) & (res ^ ~rhs) & (1U << 31)) != 0;
 #endif
 }
 
@@ -250,9 +270,9 @@ V8_BASE_EXPORT bool SignedMulOverflow32(int32_t lhs, int32_t rhs, int32_t* val);
 // |rhs| and stores the result into the variable pointed to by |val| and
 // returns true if the signed summation resulted in an overflow.
 inline bool SignedAddOverflow64(int64_t lhs, int64_t rhs, int64_t* val) {
-  uint64_t res = static_cast<uint64_t>(lhs) + static_cast<uint64_t>(rhs);
-  *val = bit_cast<int64_t>(res);
-  return ((res ^ lhs) & (res ^ rhs) & (1ULL << 63)) != 0;
+    uint64_t res = static_cast<uint64_t>(lhs) + static_cast<uint64_t>(rhs);
+    *val = bit_cast<int64_t>(res);
+    return ((res ^ lhs) & (res ^ rhs) & (1ULL << 63)) != 0;
 }
 
 
@@ -260,9 +280,9 @@ inline bool SignedAddOverflow64(int64_t lhs, int64_t rhs, int64_t* val) {
 // |rhs| and stores the result into the variable pointed to by |val| and
 // returns true if the signed subtraction resulted in an overflow.
 inline bool SignedSubOverflow64(int64_t lhs, int64_t rhs, int64_t* val) {
-  uint64_t res = static_cast<uint64_t>(lhs) - static_cast<uint64_t>(rhs);
-  *val = bit_cast<int64_t>(res);
-  return ((res ^ lhs) & (res ^ ~rhs) & (1ULL << 63)) != 0;
+    uint64_t res = static_cast<uint64_t>(lhs) - static_cast<uint64_t>(rhs);
+    *val = bit_cast<int64_t>(res);
+    return ((res ^ lhs) & (res ^ ~rhs) & (1ULL << 63)) != 0;
 }
 
 // SignedMulOverflow64(lhs,rhs,val) performs a signed multiplication of |lhs|
@@ -279,7 +299,7 @@ V8_BASE_EXPORT int32_t SignedMulHigh32(int32_t lhs, int32_t rhs);
 // |lhs| and |rhs|, extracts the most significant 32 bits of the result, and
 // adds the accumulate value |acc|.
 V8_BASE_EXPORT int32_t SignedMulHighAndAdd32(int32_t lhs, int32_t rhs,
-                                             int32_t acc);
+        int32_t acc);
 
 // SignedDiv32(lhs, rhs) divides |lhs| by |rhs| and returns the quotient
 // truncated to int32. If |rhs| is zero, then zero is returned. If |lhs|
@@ -296,10 +316,10 @@ V8_BASE_EXPORT int32_t SignedMod32(int32_t lhs, int32_t rhs);
 // returns true if the unsigned summation resulted in an overflow.
 inline bool UnsignedAddOverflow32(uint32_t lhs, uint32_t rhs, uint32_t* val) {
 #if V8_HAS_BUILTIN_SADD_OVERFLOW
-  return __builtin_uadd_overflow(lhs, rhs, val);
+    return __builtin_uadd_overflow(lhs, rhs, val);
 #else
-  *val = lhs + rhs;
-  return *val < (lhs | rhs);
+    *val = lhs + rhs;
+    return *val < (lhs | rhs);
 #endif
 }
 
@@ -307,14 +327,14 @@ inline bool UnsignedAddOverflow32(uint32_t lhs, uint32_t rhs, uint32_t* val) {
 // UnsignedDiv32(lhs, rhs) divides |lhs| by |rhs| and returns the quotient
 // truncated to uint32. If |rhs| is zero, then zero is returned.
 inline uint32_t UnsignedDiv32(uint32_t lhs, uint32_t rhs) {
-  return rhs ? lhs / rhs : 0u;
+    return rhs ? lhs / rhs : 0u;
 }
 
 
 // UnsignedMod32(lhs, rhs) divides |lhs| by |rhs| and returns the remainder
 // truncated to uint32. If |rhs| is zero, then zero is returned.
 inline uint32_t UnsignedMod32(uint32_t lhs, uint32_t rhs) {
-  return rhs ? lhs % rhs : 0u;
+    return rhs ? lhs % rhs : 0u;
 }
 
 

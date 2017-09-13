@@ -24,12 +24,12 @@
 // These values must be in sync with macro values in trace_log.h in
 // chromium.
 enum CategoryGroupEnabledFlags {
-  // Category group enabled for the recording mode.
-  kEnabledForRecording_CategoryGroupEnabledFlags = 1 << 0,
-  // Category group enabled by SetEventCallbackEnabled().
-  kEnabledForEventCallback_CategoryGroupEnabledFlags = 1 << 2,
-  // Category group enabled to export events to ETW.
-  kEnabledForETWExport_CategoryGroupEnabledFlags = 1 << 3,
+    // Category group enabled for the recording mode.
+    kEnabledForRecording_CategoryGroupEnabledFlags = 1 << 0,
+    // Category group enabled by SetEventCallbackEnabled().
+    kEnabledForEventCallback_CategoryGroupEnabledFlags = 1 << 2,
+    // Category group enabled to export events to ETW.
+    kEnabledForETWExport_CategoryGroupEnabledFlags = 1 << 3,
 };
 
 // By default, const char* asrgument values are assumed to have long-lived scope
@@ -276,137 +276,153 @@ const decltype(nullptr) kGlobalScope = nullptr;
 const uint64_t kNoId = 0;
 
 class TraceEventHelper {
- public:
-  static v8::Platform* GetCurrentPlatform();
+    public:
+        static v8::Platform* GetCurrentPlatform();
 };
 
 // TraceID encapsulates an ID that can either be an integer or pointer. Pointers
 // are by default mangled with the Process ID so that they are unlikely to
 // collide when the same pointer is used on different processes.
 class TraceID {
- public:
-  class WithScope {
-   public:
-    WithScope(const char* scope, uint64_t raw_id)
-        : scope_(scope), raw_id_(raw_id) {}
-    uint64_t raw_id() const { return raw_id_; }
-    const char* scope() const { return scope_; }
+    public:
+        class WithScope {
+            public:
+                WithScope(const char* scope, uint64_t raw_id)
+                    : scope_(scope), raw_id_(raw_id) {}
+                uint64_t raw_id() const {
+                    return raw_id_;
+                }
+                const char* scope() const {
+                    return scope_;
+                }
 
-   private:
-    const char* scope_ = nullptr;
-    uint64_t raw_id_;
-  };
+            private:
+                const char* scope_ = nullptr;
+                uint64_t raw_id_;
+        };
 
-  class DontMangle {
-   public:
-    explicit DontMangle(const void* raw_id)
-        : raw_id_(static_cast<uint64_t>(reinterpret_cast<uintptr_t>(raw_id))) {}
-    explicit DontMangle(uint64_t raw_id) : raw_id_(raw_id) {}
-    explicit DontMangle(unsigned int raw_id) : raw_id_(raw_id) {}
-    explicit DontMangle(uint16_t raw_id) : raw_id_(raw_id) {}
-    explicit DontMangle(unsigned char raw_id) : raw_id_(raw_id) {}
-    explicit DontMangle(int64_t raw_id)
-        : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit DontMangle(int raw_id) : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit DontMangle(int16_t raw_id)
-        : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit DontMangle(signed char raw_id)
-        : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit DontMangle(WithScope scoped_id)
-        : scope_(scoped_id.scope()), raw_id_(scoped_id.raw_id()) {}
-    const char* scope() const { return scope_; }
-    uint64_t raw_id() const { return raw_id_; }
+        class DontMangle {
+            public:
+                explicit DontMangle(const void* raw_id)
+                    : raw_id_(static_cast<uint64_t>(reinterpret_cast<uintptr_t>(raw_id))) {}
+                explicit DontMangle(uint64_t raw_id) : raw_id_(raw_id) {}
+                explicit DontMangle(unsigned int raw_id) : raw_id_(raw_id) {}
+                explicit DontMangle(uint16_t raw_id) : raw_id_(raw_id) {}
+                explicit DontMangle(unsigned char raw_id) : raw_id_(raw_id) {}
+                explicit DontMangle(int64_t raw_id)
+                    : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit DontMangle(int raw_id) : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit DontMangle(int16_t raw_id)
+                    : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit DontMangle(signed char raw_id)
+                    : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit DontMangle(WithScope scoped_id)
+                    : scope_(scoped_id.scope()), raw_id_(scoped_id.raw_id()) {}
+                const char* scope() const {
+                    return scope_;
+                }
+                uint64_t raw_id() const {
+                    return raw_id_;
+                }
 
-   private:
-    const char* scope_ = nullptr;
-    uint64_t raw_id_;
-  };
+            private:
+                const char* scope_ = nullptr;
+                uint64_t raw_id_;
+        };
 
-  class ForceMangle {
-   public:
-    explicit ForceMangle(uint64_t raw_id) : raw_id_(raw_id) {}
-    explicit ForceMangle(unsigned int raw_id) : raw_id_(raw_id) {}
-    explicit ForceMangle(uint16_t raw_id) : raw_id_(raw_id) {}
-    explicit ForceMangle(unsigned char raw_id) : raw_id_(raw_id) {}
-    explicit ForceMangle(int64_t raw_id)
-        : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit ForceMangle(int raw_id) : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit ForceMangle(int16_t raw_id)
-        : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    explicit ForceMangle(signed char raw_id)
-        : raw_id_(static_cast<uint64_t>(raw_id)) {}
-    uint64_t raw_id() const { return raw_id_; }
+        class ForceMangle {
+            public:
+                explicit ForceMangle(uint64_t raw_id) : raw_id_(raw_id) {}
+                explicit ForceMangle(unsigned int raw_id) : raw_id_(raw_id) {}
+                explicit ForceMangle(uint16_t raw_id) : raw_id_(raw_id) {}
+                explicit ForceMangle(unsigned char raw_id) : raw_id_(raw_id) {}
+                explicit ForceMangle(int64_t raw_id)
+                    : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit ForceMangle(int raw_id) : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit ForceMangle(int16_t raw_id)
+                    : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                explicit ForceMangle(signed char raw_id)
+                    : raw_id_(static_cast<uint64_t>(raw_id)) {}
+                uint64_t raw_id() const {
+                    return raw_id_;
+                }
 
-   private:
-    uint64_t raw_id_;
-  };
+            private:
+                uint64_t raw_id_;
+        };
 
-  TraceID(const void* raw_id, unsigned int* flags)
-      : raw_id_(static_cast<uint64_t>(reinterpret_cast<uintptr_t>(raw_id))) {
-    *flags |= TRACE_EVENT_FLAG_MANGLE_ID;
-  }
-  TraceID(ForceMangle raw_id, unsigned int* flags) : raw_id_(raw_id.raw_id()) {
-    *flags |= TRACE_EVENT_FLAG_MANGLE_ID;
-  }
-  TraceID(DontMangle maybe_scoped_id, unsigned int* flags)
-      : scope_(maybe_scoped_id.scope()), raw_id_(maybe_scoped_id.raw_id()) {}
-  TraceID(uint64_t raw_id, unsigned int* flags) : raw_id_(raw_id) {
-    (void)flags;
-  }
-  TraceID(unsigned int raw_id, unsigned int* flags) : raw_id_(raw_id) {
-    (void)flags;
-  }
-  TraceID(uint16_t raw_id, unsigned int* flags) : raw_id_(raw_id) {
-    (void)flags;
-  }
-  TraceID(unsigned char raw_id, unsigned int* flags) : raw_id_(raw_id) {
-    (void)flags;
-  }
-  TraceID(int64_t raw_id, unsigned int* flags)
-      : raw_id_(static_cast<uint64_t>(raw_id)) {
-    (void)flags;
-  }
-  TraceID(int raw_id, unsigned int* flags)
-      : raw_id_(static_cast<uint64_t>(raw_id)) {
-    (void)flags;
-  }
-  TraceID(int16_t raw_id, unsigned int* flags)
-      : raw_id_(static_cast<uint64_t>(raw_id)) {
-    (void)flags;
-  }
-  TraceID(signed char raw_id, unsigned int* flags)
-      : raw_id_(static_cast<uint64_t>(raw_id)) {
-    (void)flags;
-  }
-  TraceID(WithScope scoped_id, unsigned int* flags)
-      : scope_(scoped_id.scope()), raw_id_(scoped_id.raw_id()) {}
+        TraceID(const void* raw_id, unsigned int* flags)
+            : raw_id_(static_cast<uint64_t>(reinterpret_cast<uintptr_t>(raw_id))) {
+            *flags |= TRACE_EVENT_FLAG_MANGLE_ID;
+        }
+        TraceID(ForceMangle raw_id, unsigned int* flags) : raw_id_(raw_id.raw_id()) {
+            *flags |= TRACE_EVENT_FLAG_MANGLE_ID;
+        }
+        TraceID(DontMangle maybe_scoped_id, unsigned int* flags)
+            : scope_(maybe_scoped_id.scope()), raw_id_(maybe_scoped_id.raw_id()) {}
+        TraceID(uint64_t raw_id, unsigned int* flags) : raw_id_(raw_id) {
+            (void)flags;
+        }
+        TraceID(unsigned int raw_id, unsigned int* flags) : raw_id_(raw_id) {
+            (void)flags;
+        }
+        TraceID(uint16_t raw_id, unsigned int* flags) : raw_id_(raw_id) {
+            (void)flags;
+        }
+        TraceID(unsigned char raw_id, unsigned int* flags) : raw_id_(raw_id) {
+            (void)flags;
+        }
+        TraceID(int64_t raw_id, unsigned int* flags)
+            : raw_id_(static_cast<uint64_t>(raw_id)) {
+            (void)flags;
+        }
+        TraceID(int raw_id, unsigned int* flags)
+            : raw_id_(static_cast<uint64_t>(raw_id)) {
+            (void)flags;
+        }
+        TraceID(int16_t raw_id, unsigned int* flags)
+            : raw_id_(static_cast<uint64_t>(raw_id)) {
+            (void)flags;
+        }
+        TraceID(signed char raw_id, unsigned int* flags)
+            : raw_id_(static_cast<uint64_t>(raw_id)) {
+            (void)flags;
+        }
+        TraceID(WithScope scoped_id, unsigned int* flags)
+            : scope_(scoped_id.scope()), raw_id_(scoped_id.raw_id()) {}
 
-  uint64_t raw_id() const { return raw_id_; }
-  const char* scope() const { return scope_; }
+        uint64_t raw_id() const {
+            return raw_id_;
+        }
+        const char* scope() const {
+            return scope_;
+        }
 
- private:
-  const char* scope_ = nullptr;
-  uint64_t raw_id_;
+    private:
+        const char* scope_ = nullptr;
+        uint64_t raw_id_;
 };
 
 // Simple union to store various types as uint64_t.
 union TraceValueUnion {
-  bool as_bool;
-  uint64_t as_uint;
-  int64_t as_int;
-  double as_double;
-  const void* as_pointer;
-  const char* as_string;
+    bool as_bool;
+    uint64_t as_uint;
+    int64_t as_int;
+    double as_double;
+    const void* as_pointer;
+    const char* as_string;
 };
 
 // Simple container for const char* that should be copied instead of retained.
 class TraceStringWithCopy {
- public:
-  explicit TraceStringWithCopy(const char* str) : str_(str) {}
-  operator const char*() const { return str_; }
+    public:
+        explicit TraceStringWithCopy(const char* str) : str_(str) {}
+        operator const char* () const {
+            return str_;
+        }
 
- private:
-  const char* str_;
+    private:
+        const char* str_;
 };
 
 static V8_INLINE uint64_t AddTraceEventImpl(
@@ -414,21 +430,21 @@ static V8_INLINE uint64_t AddTraceEventImpl(
     const char* scope, uint64_t id, uint64_t bind_id, int32_t num_args,
     const char** arg_names, const uint8_t* arg_types,
     const uint64_t* arg_values, unsigned int flags) {
-  std::unique_ptr<ConvertableToTraceFormat> arg_convertables[2];
-  if (num_args > 0 && arg_types[0] == TRACE_VALUE_TYPE_CONVERTABLE) {
-    arg_convertables[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(
-        static_cast<intptr_t>(arg_values[0])));
-  }
-  if (num_args > 1 && arg_types[1] == TRACE_VALUE_TYPE_CONVERTABLE) {
-    arg_convertables[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(
-        static_cast<intptr_t>(arg_values[1])));
-  }
-  DCHECK(num_args <= 2);
-  v8::Platform* platform =
-      v8::internal::tracing::TraceEventHelper::GetCurrentPlatform();
-  return platform->AddTraceEvent(phase, category_group_enabled, name, scope, id,
-                                 bind_id, num_args, arg_names, arg_types,
-                                 arg_values, arg_convertables, flags);
+    std::unique_ptr<ConvertableToTraceFormat> arg_convertables[2];
+    if (num_args > 0 && arg_types[0] == TRACE_VALUE_TYPE_CONVERTABLE) {
+        arg_convertables[0].reset(reinterpret_cast<ConvertableToTraceFormat*>(
+                                      static_cast<intptr_t>(arg_values[0])));
+    }
+    if (num_args > 1 && arg_types[1] == TRACE_VALUE_TYPE_CONVERTABLE) {
+        arg_convertables[1].reset(reinterpret_cast<ConvertableToTraceFormat*>(
+                                      static_cast<intptr_t>(arg_values[1])));
+    }
+    DCHECK(num_args <= 2);
+    v8::Platform* platform =
+        v8::internal::tracing::TraceEventHelper::GetCurrentPlatform();
+    return platform->AddTraceEvent(phase, category_group_enabled, name, scope, id,
+                                   bind_id, num_args, arg_names, arg_types,
+                                   arg_values, arg_convertables, flags);
 }
 
 // Define SetTraceValue for each allowed type. It stores the type and
@@ -473,15 +489,15 @@ INTERNAL_DECLARE_SET_TRACE_VALUE(const TraceStringWithCopy&, as_string,
 
 static V8_INLINE void SetTraceValue(ConvertableToTraceFormat* convertable_value,
                                     unsigned char* type, uint64_t* value) {
-  *type = TRACE_VALUE_TYPE_CONVERTABLE;
-  *value = static_cast<uint64_t>(reinterpret_cast<intptr_t>(convertable_value));
+    *type = TRACE_VALUE_TYPE_CONVERTABLE;
+    *value = static_cast<uint64_t>(reinterpret_cast<intptr_t>(convertable_value));
 }
 
 template <typename T>
 static V8_INLINE typename std::enable_if<
-    std::is_convertible<T*, ConvertableToTraceFormat*>::value>::type
+std::is_convertible<T*, ConvertableToTraceFormat*>::value>::type
 SetTraceValue(std::unique_ptr<T> ptr, unsigned char* type, uint64_t* value) {
-  SetTraceValue(ptr.release(), type, value);
+    SetTraceValue(ptr.release(), type, value);
 }
 
 // These AddTraceEvent template
@@ -495,9 +511,9 @@ static V8_INLINE uint64_t AddTraceEvent(char phase,
                                         const char* name, const char* scope,
                                         uint64_t id, uint64_t bind_id,
                                         unsigned int flags) {
-  return TRACE_EVENT_API_ADD_TRACE_EVENT(phase, category_group_enabled, name,
-                                         scope, id, bind_id, kZeroNumArgs,
-                                         nullptr, nullptr, nullptr, flags);
+    return TRACE_EVENT_API_ADD_TRACE_EVENT(phase, category_group_enabled, name,
+                                           scope, id, bind_id, kZeroNumArgs,
+                                           nullptr, nullptr, nullptr, flags);
 }
 
 template <class ARG1_TYPE>
@@ -505,13 +521,13 @@ static V8_INLINE uint64_t AddTraceEvent(
     char phase, const uint8_t* category_group_enabled, const char* name,
     const char* scope, uint64_t id, uint64_t bind_id, unsigned int flags,
     const char* arg1_name, ARG1_TYPE&& arg1_val) {
-  const int num_args = 1;
-  uint8_t arg_type;
-  uint64_t arg_value;
-  SetTraceValue(std::forward<ARG1_TYPE>(arg1_val), &arg_type, &arg_value);
-  return TRACE_EVENT_API_ADD_TRACE_EVENT(
-      phase, category_group_enabled, name, scope, id, bind_id, num_args,
-      &arg1_name, &arg_type, &arg_value, flags);
+    const int num_args = 1;
+    uint8_t arg_type;
+    uint64_t arg_value;
+    SetTraceValue(std::forward<ARG1_TYPE>(arg1_val), &arg_type, &arg_value);
+    return TRACE_EVENT_API_ADD_TRACE_EVENT(
+               phase, category_group_enabled, name, scope, id, bind_id, num_args,
+               &arg1_name, &arg_type, &arg_value, flags);
 }
 
 template <class ARG1_TYPE, class ARG2_TYPE>
@@ -520,77 +536,77 @@ static V8_INLINE uint64_t AddTraceEvent(
     const char* scope, uint64_t id, uint64_t bind_id, unsigned int flags,
     const char* arg1_name, ARG1_TYPE&& arg1_val, const char* arg2_name,
     ARG2_TYPE&& arg2_val) {
-  const int num_args = 2;
-  const char* arg_names[2] = {arg1_name, arg2_name};
-  unsigned char arg_types[2];
-  uint64_t arg_values[2];
-  SetTraceValue(std::forward<ARG1_TYPE>(arg1_val), &arg_types[0],
-                &arg_values[0]);
-  SetTraceValue(std::forward<ARG2_TYPE>(arg2_val), &arg_types[1],
-                &arg_values[1]);
-  return TRACE_EVENT_API_ADD_TRACE_EVENT(
-      phase, category_group_enabled, name, scope, id, bind_id, num_args,
-      arg_names, arg_types, arg_values, flags);
+    const int num_args = 2;
+    const char* arg_names[2] = {arg1_name, arg2_name};
+    unsigned char arg_types[2];
+    uint64_t arg_values[2];
+    SetTraceValue(std::forward<ARG1_TYPE>(arg1_val), &arg_types[0],
+                  &arg_values[0]);
+    SetTraceValue(std::forward<ARG2_TYPE>(arg2_val), &arg_types[1],
+                  &arg_values[1]);
+    return TRACE_EVENT_API_ADD_TRACE_EVENT(
+               phase, category_group_enabled, name, scope, id, bind_id, num_args,
+               arg_names, arg_types, arg_values, flags);
 }
 
 // Used by TRACE_EVENTx macros. Do not use directly.
 class ScopedTracer {
- public:
-  // Note: members of data_ intentionally left uninitialized. See Initialize.
-  ScopedTracer() : p_data_(NULL) {}
+    public:
+        // Note: members of data_ intentionally left uninitialized. See Initialize.
+        ScopedTracer() : p_data_(NULL) {}
 
-  ~ScopedTracer() {
-    if (p_data_ && *data_.category_group_enabled)
-      TRACE_EVENT_API_UPDATE_TRACE_EVENT_DURATION(
-          data_.category_group_enabled, data_.name, data_.event_handle);
-  }
+        ~ScopedTracer() {
+            if (p_data_ && *data_.category_group_enabled)
+                TRACE_EVENT_API_UPDATE_TRACE_EVENT_DURATION(
+                    data_.category_group_enabled, data_.name, data_.event_handle);
+        }
 
-  void Initialize(const uint8_t* category_group_enabled, const char* name,
-                  uint64_t event_handle) {
-    data_.category_group_enabled = category_group_enabled;
-    data_.name = name;
-    data_.event_handle = event_handle;
-    p_data_ = &data_;
-  }
+        void Initialize(const uint8_t* category_group_enabled, const char* name,
+                        uint64_t event_handle) {
+            data_.category_group_enabled = category_group_enabled;
+            data_.name = name;
+            data_.event_handle = event_handle;
+            p_data_ = &data_;
+        }
 
- private:
-  // This Data struct workaround is to avoid initializing all the members
-  // in Data during construction of this object, since this object is always
-  // constructed, even when tracing is disabled. If the members of Data were
-  // members of this class instead, compiler warnings occur about potential
-  // uninitialized accesses.
-  struct Data {
-    const uint8_t* category_group_enabled;
-    const char* name;
-    uint64_t event_handle;
-  };
-  Data* p_data_;
-  Data data_;
+    private:
+        // This Data struct workaround is to avoid initializing all the members
+        // in Data during construction of this object, since this object is always
+        // constructed, even when tracing is disabled. If the members of Data were
+        // members of this class instead, compiler warnings occur about potential
+        // uninitialized accesses.
+        struct Data {
+            const uint8_t* category_group_enabled;
+            const char* name;
+            uint64_t event_handle;
+        };
+        Data* p_data_;
+        Data data_;
 };
 
 // Do not use directly.
 class CallStatsScopedTracer {
- public:
-  CallStatsScopedTracer() : p_data_(nullptr) {}
-  ~CallStatsScopedTracer() {
-    if (V8_UNLIKELY(p_data_ && *data_.category_group_enabled)) {
-      AddEndTraceEvent();
-    }
-  }
+    public:
+        CallStatsScopedTracer() : p_data_(nullptr) {}
+        ~CallStatsScopedTracer() {
+            if (V8_UNLIKELY(p_data_ && *data_.category_group_enabled)) {
+                AddEndTraceEvent();
+            }
+        }
 
-  void Initialize(v8::internal::Isolate* isolate,
-                  const uint8_t* category_group_enabled, const char* name);
+        void Initialize(v8::internal::Isolate* isolate,
+                        const uint8_t* category_group_enabled, const char* name);
 
- private:
-  void AddEndTraceEvent();
-  struct Data {
-    const uint8_t* category_group_enabled;
-    const char* name;
-    v8::internal::Isolate* isolate;
-  };
-  bool has_parent_scope_;
-  Data* p_data_;
-  Data data_;
+    private:
+        void AddEndTraceEvent();
+        struct Data {
+            const uint8_t* category_group_enabled;
+            const char* name;
+            v8::internal::Isolate* isolate;
+        };
+        bool has_parent_scope_;
+        Data* p_data_;
+        Data data_;
 };
 
 }  // namespace tracing

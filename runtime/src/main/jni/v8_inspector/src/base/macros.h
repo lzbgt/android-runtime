@@ -95,11 +95,11 @@ char (&ArraySizeHelper(const T (&array)[N]))[N];
 // is likely to surprise you.
 template <class Dest, class Source>
 V8_INLINE Dest bit_cast(Source const& source) {
-  static_assert(sizeof(Dest) == sizeof(Source),
-                "source and dest must be same size");
-  Dest dest;
-  memcpy(&dest, &source, sizeof(dest));
-  return dest;
+    static_assert(sizeof(Dest) == sizeof(Source),
+                  "source and dest must be same size");
+    Dest dest;
+    memcpy(&dest, &source, sizeof(dest));
+    return dest;
 }
 
 
@@ -255,7 +255,7 @@ inline void USE(T) { }
 // 0-relative int offsets.
 template <typename T>
 inline intptr_t OffsetFrom(T x) {
-  return x - static_cast<T>(0);
+    return x - static_cast<T>(0);
 }
 
 
@@ -264,22 +264,22 @@ inline intptr_t OffsetFrom(T x) {
 // integral types.
 template <typename T>
 inline T AddressFrom(intptr_t x) {
-  return static_cast<T>(static_cast<T>(0) + x);
+    return static_cast<T>(static_cast<T>(0) + x);
 }
 
 
 // Return the largest multiple of m which is <= x.
 template <typename T>
 inline T RoundDown(T x, intptr_t m) {
-  DCHECK(IS_POWER_OF_TWO(m));
-  return AddressFrom<T>(OffsetFrom(x) & -m);
+    DCHECK(IS_POWER_OF_TWO(m));
+    return AddressFrom<T>(OffsetFrom(x) & -m);
 }
 
 
 // Return the smallest multiple of m which is >= x.
 template <typename T>
 inline T RoundUp(T x, intptr_t m) {
-  return RoundDown<T>(static_cast<T>(x + m - 1), m);
+    return RoundDown<T>(static_cast<T>(x + m - 1), m);
 }
 
 #endif   // V8_BASE_MACROS_H_

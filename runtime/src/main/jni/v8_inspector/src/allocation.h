@@ -18,12 +18,16 @@ V8_EXPORT_PRIVATE void FatalProcessOutOfMemory(const char* message);
 
 // Superclass for classes managed with new & delete.
 class V8_EXPORT_PRIVATE Malloced {
- public:
-  void* operator new(size_t size) { return New(size); }
-  void  operator delete(void* p) { Delete(p); }
+    public:
+        void* operator new(size_t size) {
+            return New(size);
+        }
+        void  operator delete(void* p) {
+            Delete(p);
+        }
 
-  static void* New(size_t size);
-  static void Delete(void* p);
+        static void* New(size_t size);
+        static void Delete(void* p);
 };
 
 // DEPRECATED
@@ -35,23 +39,25 @@ class V8_EXPORT_PRIVATE Malloced {
 // The subclass of AllStatic cannot be instantiated at all.
 class AllStatic {
 #ifdef DEBUG
- public:
-  AllStatic() = delete;
+    public:
+        AllStatic() = delete;
 #endif
 };
 
 
 template <typename T>
 T* NewArray(size_t size) {
-  T* result = new T[size];
-  if (result == NULL) FatalProcessOutOfMemory("NewArray");
-  return result;
+    T* result = new T[size];
+    if (result == NULL) {
+        FatalProcessOutOfMemory("NewArray");
+    }
+    return result;
 }
 
 
 template <typename T>
 void DeleteArray(T* array) {
-  delete[] array;
+    delete[] array;
 }
 
 
@@ -65,14 +71,18 @@ char* StrNDup(const char* str, int n);
 // Allocation policy for allocating in the C free store using malloc
 // and free. Used as the default policy for lists.
 class FreeStoreAllocationPolicy {
- public:
-  INLINE(void* New(size_t size)) { return Malloced::New(size); }
-  INLINE(static void Delete(void* p)) { Malloced::Delete(p); }
+    public:
+        INLINE(void* New(size_t size)) {
+            return Malloced::New(size);
+        }
+        INLINE(static void Delete(void* p)) {
+            Malloced::Delete(p);
+        }
 };
 
 
 void* AlignedAlloc(size_t size, size_t alignment);
-void AlignedFree(void *ptr);
+void AlignedFree(void* ptr);
 
 }  // namespace internal
 }  // namespace v8

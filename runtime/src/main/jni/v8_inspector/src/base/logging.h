@@ -14,7 +14,7 @@
 #include "src/base/compiler-specific.h"
 
 extern "C" PRINTF_FORMAT(3, 4) V8_NORETURN V8_BASE_EXPORT
-    void V8_Fatal(const char* file, int line, const char* format, ...);
+void V8_Fatal(const char* file, int line, const char* format, ...);
 
 // The FATAL, UNREACHABLE and UNIMPLEMENTED macros are useful during
 // development, but they should not be relied on in the final product.
@@ -88,8 +88,8 @@ V8_BASE_EXPORT void SetPrintStackTrace(void (*print_stack_trace_)());
 // volatile and reference.
 template <typename T>
 struct PassType : public std::conditional<
-                      std::is_scalar<typename std::decay<T>::type>::value,
-                      typename std::decay<T>::type, T const&> {};
+    std::is_scalar<typename std::decay<T>::type>::value,
+    typename std::decay<T>::type, T const&> {};
 
 // Build the error message string.  This is separate from the "Impl"
 // function template because it is not performance critical and so can
@@ -99,9 +99,9 @@ template <typename Lhs, typename Rhs>
 std::string* MakeCheckOpString(typename PassType<Lhs>::type lhs,
                                typename PassType<Rhs>::type rhs,
                                char const* msg) {
-  std::ostringstream ss;
-  ss << msg << " (" << lhs << " vs. " << rhs << ")";
-  return new std::string(ss.str());
+    std::ostringstream ss;
+    ss << msg << " (" << lhs << " vs. " << rhs << ")";
+    return new std::string(ss.str());
 }
 
 // Commonly used instantiations of MakeCheckOpString<>. Explicitly instantiated
@@ -123,12 +123,12 @@ DEFINE_MAKE_CHECK_OP_STRING(void const*)
 // signed, and Rhs is unsigned. False in all other cases.
 template <typename Lhs, typename Rhs>
 struct is_signed_vs_unsigned {
-  enum : bool {
-    value = std::is_integral<typename std::decay<Lhs>::type>::value &&
-            std::is_integral<typename std::decay<Rhs>::type>::value &&
-            std::is_signed<typename std::decay<Lhs>::type>::value &&
-            std::is_unsigned<typename std::decay<Rhs>::type>::value
-  };
+    enum : bool {
+        value = std::is_integral<typename std::decay<Lhs>::type>::value &&
+                std::is_integral<typename std::decay<Rhs>::type>::value &&
+                std::is_signed<typename std::decay<Lhs>::type>::value &&
+                std::is_unsigned<typename std::decay<Rhs>::type>::value
+    };
 };
 // Same thing, other way around: Lhs is unsigned, Rhs signed.
 template <typename Lhs, typename Rhs>

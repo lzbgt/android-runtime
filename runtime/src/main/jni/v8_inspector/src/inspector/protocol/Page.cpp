@@ -34,8 +34,7 @@ const char* Viewport = "Viewport";
 const char* Page = "Page";
 } // namespace CoordinateSystemEnum
 
-std::unique_ptr<Frame> Frame::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<Frame> Frame::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -70,34 +69,34 @@ std::unique_ptr<Frame> Frame::fromValue(protocol::Value* value, ErrorSupport* er
     errors->setName("mimeType");
     result->m_mimeType = ValueConversions<String>::fromValue(mimeTypeValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> Frame::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> Frame::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("id", ValueConversions<String>::toValue(m_id));
-    if (m_parentId.isJust())
+    if (m_parentId.isJust()) {
         result->setValue("parentId", ValueConversions<String>::toValue(m_parentId.fromJust()));
+    }
     result->setValue("loaderId", ValueConversions<String>::toValue(m_loaderId));
-    if (m_name.isJust())
+    if (m_name.isJust()) {
         result->setValue("name", ValueConversions<String>::toValue(m_name.fromJust()));
+    }
     result->setValue("url", ValueConversions<String>::toValue(m_url));
     result->setValue("securityOrigin", ValueConversions<String>::toValue(m_securityOrigin));
     result->setValue("mimeType", ValueConversions<String>::toValue(m_mimeType));
     return result;
 }
 
-std::unique_ptr<Frame> Frame::clone() const
-{
+std::unique_ptr<Frame> Frame::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<FrameResource> FrameResource::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<FrameResource> FrameResource::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -131,34 +130,35 @@ std::unique_ptr<FrameResource> FrameResource::fromValue(protocol::Value* value, 
         result->m_sourceMapURL = ValueConversions<String>::fromValue(sourceMapURLValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> FrameResource::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> FrameResource::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("url", ValueConversions<String>::toValue(m_url));
     result->setValue("type", ValueConversions<String>::toValue(m_type));
     result->setValue("mimeType", ValueConversions<String>::toValue(m_mimeType));
-    if (m_failed.isJust())
+    if (m_failed.isJust()) {
         result->setValue("failed", ValueConversions<bool>::toValue(m_failed.fromJust()));
-    if (m_canceled.isJust())
+    }
+    if (m_canceled.isJust()) {
         result->setValue("canceled", ValueConversions<bool>::toValue(m_canceled.fromJust()));
-    if (m_sourceMapURL.isJust())
+    }
+    if (m_sourceMapURL.isJust()) {
         result->setValue("sourceMapURL", ValueConversions<String>::toValue(m_sourceMapURL.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<FrameResource> FrameResource::clone() const
-{
+std::unique_ptr<FrameResource> FrameResource::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<FrameResourceTree> FrameResourceTree::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<FrameResourceTree> FrameResourceTree::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -179,29 +179,28 @@ std::unique_ptr<FrameResourceTree> FrameResourceTree::fromValue(protocol::Value*
     errors->setName("resources");
     result->m_resources = ValueConversions<protocol::Array<protocol::Page::FrameResource>>::fromValue(resourcesValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> FrameResourceTree::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> FrameResourceTree::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("frame", ValueConversions<protocol::Page::Frame>::toValue(m_frame.get()));
-    if (m_childFrames.isJust())
+    if (m_childFrames.isJust()) {
         result->setValue("childFrames", ValueConversions<protocol::Array<protocol::Page::FrameResourceTree>>::toValue(m_childFrames.fromJust()));
+    }
     result->setValue("resources", ValueConversions<protocol::Array<protocol::Page::FrameResource>>::toValue(m_resources.get()));
     return result;
 }
 
-std::unique_ptr<FrameResourceTree> FrameResourceTree::clone() const
-{
+std::unique_ptr<FrameResourceTree> FrameResourceTree::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<SearchResult> SearchResult::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<SearchResult> SearchResult::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -225,30 +224,29 @@ std::unique_ptr<SearchResult> SearchResult::fromValue(protocol::Value* value, Er
         result->m_requestId = ValueConversions<String>::fromValue(requestIdValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> SearchResult::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> SearchResult::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("url", ValueConversions<String>::toValue(m_url));
     result->setValue("frameId", ValueConversions<String>::toValue(m_frameId));
     result->setValue("matchesCount", ValueConversions<double>::toValue(m_matchesCount));
-    if (m_requestId.isJust())
+    if (m_requestId.isJust()) {
         result->setValue("requestId", ValueConversions<String>::toValue(m_requestId.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<SearchResult> SearchResult::clone() const
-{
+std::unique_ptr<SearchResult> SearchResult::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<LoadEventFiredNotification> LoadEventFiredNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<LoadEventFiredNotification> LoadEventFiredNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -261,26 +259,24 @@ std::unique_ptr<LoadEventFiredNotification> LoadEventFiredNotification::fromValu
     errors->setName("timestamp");
     result->m_timestamp = ValueConversions<double>::fromValue(timestampValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> LoadEventFiredNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> LoadEventFiredNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("timestamp", ValueConversions<double>::toValue(m_timestamp));
     return result;
 }
 
-std::unique_ptr<LoadEventFiredNotification> LoadEventFiredNotification::clone() const
-{
+std::unique_ptr<LoadEventFiredNotification> LoadEventFiredNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<FrameDetachedNotification> FrameDetachedNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<FrameDetachedNotification> FrameDetachedNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -293,26 +289,24 @@ std::unique_ptr<FrameDetachedNotification> FrameDetachedNotification::fromValue(
     errors->setName("frameId");
     result->m_frameId = ValueConversions<String>::fromValue(frameIdValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> FrameDetachedNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> FrameDetachedNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("frameId", ValueConversions<String>::toValue(m_frameId));
     return result;
 }
 
-std::unique_ptr<FrameDetachedNotification> FrameDetachedNotification::clone() const
-{
+std::unique_ptr<FrameDetachedNotification> FrameDetachedNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<FrameStartedLoadingNotification> FrameStartedLoadingNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<FrameStartedLoadingNotification> FrameStartedLoadingNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -325,26 +319,24 @@ std::unique_ptr<FrameStartedLoadingNotification> FrameStartedLoadingNotification
     errors->setName("frameId");
     result->m_frameId = ValueConversions<String>::fromValue(frameIdValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> FrameStartedLoadingNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> FrameStartedLoadingNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("frameId", ValueConversions<String>::toValue(m_frameId));
     return result;
 }
 
-std::unique_ptr<FrameStartedLoadingNotification> FrameStartedLoadingNotification::clone() const
-{
+std::unique_ptr<FrameStartedLoadingNotification> FrameStartedLoadingNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<FrameStoppedLoadingNotification> FrameStoppedLoadingNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<FrameStoppedLoadingNotification> FrameStoppedLoadingNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -357,20 +349,19 @@ std::unique_ptr<FrameStoppedLoadingNotification> FrameStoppedLoadingNotification
     errors->setName("frameId");
     result->m_frameId = ValueConversions<String>::fromValue(frameIdValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> FrameStoppedLoadingNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> FrameStoppedLoadingNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("frameId", ValueConversions<String>::toValue(m_frameId));
     return result;
 }
 
-std::unique_ptr<FrameStoppedLoadingNotification> FrameStoppedLoadingNotification::clone() const
-{
+std::unique_ptr<FrameStoppedLoadingNotification> FrameStoppedLoadingNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
@@ -380,104 +371,102 @@ std::unique_ptr<FrameStoppedLoadingNotification> FrameStoppedLoadingNotification
 
 // ------------- Frontend notifications.
 
-void Frontend::loadEventFired(double timestamp)
-{
-    if (!m_frontendChannel)
+void Frontend::loadEventFired(double timestamp) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<LoadEventFiredNotification> messageData = LoadEventFiredNotification::create()
-        .setTimestamp(timestamp)
-        .build();
+            .setTimestamp(timestamp)
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Page.loadEventFired", std::move(messageData)));
 }
 
-void Frontend::frameDetached(const String& frameId)
-{
-    if (!m_frontendChannel)
+void Frontend::frameDetached(const String& frameId) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<FrameDetachedNotification> messageData = FrameDetachedNotification::create()
-        .setFrameId(frameId)
-        .build();
+            .setFrameId(frameId)
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Page.frameDetached", std::move(messageData)));
 }
 
-void Frontend::frameStartedLoading(const String& frameId)
-{
-    if (!m_frontendChannel)
+void Frontend::frameStartedLoading(const String& frameId) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<FrameStartedLoadingNotification> messageData = FrameStartedLoadingNotification::create()
-        .setFrameId(frameId)
-        .build();
+            .setFrameId(frameId)
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Page.frameStartedLoading", std::move(messageData)));
 }
 
-void Frontend::frameStoppedLoading(const String& frameId)
-{
-    if (!m_frontendChannel)
+void Frontend::frameStoppedLoading(const String& frameId) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<FrameStoppedLoadingNotification> messageData = FrameStoppedLoadingNotification::create()
-        .setFrameId(frameId)
-        .build();
+            .setFrameId(frameId)
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Page.frameStoppedLoading", std::move(messageData)));
 }
 
-void Frontend::flush()
-{
+void Frontend::flush() {
     m_frontendChannel->flushProtocolNotifications();
 }
 
-void Frontend::sendRawNotification(const String& notification)
-{
+void Frontend::sendRawNotification(const String& notification) {
     m_frontendChannel->sendProtocolNotification(InternalRawNotification::create(notification));
 }
 
 // --------------------- Dispatcher.
 
 class DispatcherImpl : public protocol::DispatcherBase {
-public:
-    DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
-        : DispatcherBase(frontendChannel)
-        , m_backend(backend)
-        , m_fallThroughForNotFound(fallThroughForNotFound) {
-        m_dispatchMap["Page.enable"] = &DispatcherImpl::enable;
-        m_dispatchMap["Page.disable"] = &DispatcherImpl::disable;
-        m_dispatchMap["Page.addScriptToEvaluateOnLoad"] = &DispatcherImpl::addScriptToEvaluateOnLoad;
-        m_dispatchMap["Page.removeScriptToEvaluateOnLoad"] = &DispatcherImpl::removeScriptToEvaluateOnLoad;
-        m_dispatchMap["Page.reload"] = &DispatcherImpl::reload;
-        m_dispatchMap["Page.getResourceTree"] = &DispatcherImpl::getResourceTree;
-        m_dispatchMap["Page.getResourceContent"] = &DispatcherImpl::getResourceContent;
-        m_dispatchMap["Page.searchInResource"] = &DispatcherImpl::searchInResource;
-        m_dispatchMap["Page.searchInResources"] = &DispatcherImpl::searchInResources;
-        m_dispatchMap["Page.setDocumentContent"] = &DispatcherImpl::setDocumentContent;
-    }
-    ~DispatcherImpl() override { }
-    DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
+    public:
+        DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
+            : DispatcherBase(frontendChannel)
+            , m_backend(backend)
+            , m_fallThroughForNotFound(fallThroughForNotFound) {
+            m_dispatchMap["Page.enable"] = &DispatcherImpl::enable;
+            m_dispatchMap["Page.disable"] = &DispatcherImpl::disable;
+            m_dispatchMap["Page.addScriptToEvaluateOnLoad"] = &DispatcherImpl::addScriptToEvaluateOnLoad;
+            m_dispatchMap["Page.removeScriptToEvaluateOnLoad"] = &DispatcherImpl::removeScriptToEvaluateOnLoad;
+            m_dispatchMap["Page.reload"] = &DispatcherImpl::reload;
+            m_dispatchMap["Page.getResourceTree"] = &DispatcherImpl::getResourceTree;
+            m_dispatchMap["Page.getResourceContent"] = &DispatcherImpl::getResourceContent;
+            m_dispatchMap["Page.searchInResource"] = &DispatcherImpl::searchInResource;
+            m_dispatchMap["Page.searchInResources"] = &DispatcherImpl::searchInResources;
+            m_dispatchMap["Page.setDocumentContent"] = &DispatcherImpl::setDocumentContent;
+        }
+        ~DispatcherImpl() override { }
+        DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
 
-protected:
-    using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
-    using DispatchMap = protocol::HashMap<String, CallHandler>;
-    DispatchMap m_dispatchMap;
+    protected:
+        using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
+        using DispatchMap = protocol::HashMap<String, CallHandler>;
+        DispatchMap m_dispatchMap;
 
-    DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status addScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status removeScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status reload(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status getResourceTree(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status getResourceContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status searchInResource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status searchInResources(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setDocumentContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status addScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status removeScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status reload(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status getResourceTree(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status getResourceContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status searchInResource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status searchInResources(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setDocumentContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
 
-    Backend* m_backend;
-    bool m_fallThroughForNotFound;
+        Backend* m_backend;
+        bool m_fallThroughForNotFound;
 };
 
-DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject)
-{
+DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) {
     protocol::HashMap<String, CallHandler>::iterator it = m_dispatchMap.find(method);
     if (it == m_dispatchMap.end()) {
-        if (m_fallThroughForNotFound)
+        if (m_fallThroughForNotFound) {
             return DispatchResponse::kFallThrough;
+        }
         reportProtocolError(callId, DispatchResponse::kMethodNotFound, "'" + method + "' wasn't found", nullptr);
         return DispatchResponse::kError;
     }
@@ -487,28 +476,27 @@ DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& meth
 }
 
 
-DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->enable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->disable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::addScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::addScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -525,19 +513,20 @@ DispatchResponse::Status DispatcherImpl::addScriptToEvaluateOnLoad(int callId, s
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->addScriptToEvaluateOnLoad(in_scriptSource, &out_identifier);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("identifier", ValueConversions<String>::toValue(out_identifier));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::removeScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::removeScriptToEvaluateOnLoad(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -552,13 +541,13 @@ DispatchResponse::Status DispatcherImpl::removeScriptToEvaluateOnLoad(int callId
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->removeScriptToEvaluateOnLoad(in_identifier);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::reload(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::reload(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -582,31 +571,32 @@ DispatchResponse::Status DispatcherImpl::reload(int callId, std::unique_ptr<Dict
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->reload(std::move(in_ignoreCache), std::move(in_scriptToEvaluateOnLoad));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::getResourceTree(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::getResourceTree(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Declare output parameters.
     std::unique_ptr<protocol::Page::FrameResourceTree> out_frameTree;
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->getResourceTree(&out_frameTree);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("frameTree", ValueConversions<protocol::Page::FrameResourceTree>::toValue(out_frameTree.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::getResourceContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::getResourceContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -627,20 +617,21 @@ DispatchResponse::Status DispatcherImpl::getResourceContent(int callId, std::uni
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->getResourceContent(in_frameId, in_url, &out_content, &out_base64Encoded);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("content", ValueConversions<String>::toValue(out_content));
         result->setValue("base64Encoded", ValueConversions<bool>::toValue(out_base64Encoded));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::searchInResource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::searchInResource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -681,19 +672,20 @@ DispatchResponse::Status DispatcherImpl::searchInResource(int callId, std::uniqu
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->searchInResource(in_frameId, in_url, in_query, std::move(in_caseSensitive), std::move(in_isRegex), std::move(in_requestId), &out_result);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("result", ValueConversions<protocol::Array<protocol::GenericTypes::SearchMatch>>::toValue(out_result.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::searchInResources(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::searchInResources(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -722,19 +714,20 @@ DispatchResponse::Status DispatcherImpl::searchInResources(int callId, std::uniq
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->searchInResources(in_text, std::move(in_caseSensitive), std::move(in_isRegex), &out_result);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("result", ValueConversions<protocol::Array<protocol::Page::SearchResult>>::toValue(out_result.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setDocumentContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setDocumentContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -752,14 +745,14 @@ DispatchResponse::Status DispatcherImpl::setDocumentContent(int callId, std::uni
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setDocumentContent(in_frameId, in_html);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
 // static
-void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend)
-{
+void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend) {
     dispatcher->registerBackend("Page", std::unique_ptr<protocol::DispatcherBase>(new DispatcherImpl(dispatcher->channel(), backend, dispatcher->fallThroughForNotFound())));
 }
 

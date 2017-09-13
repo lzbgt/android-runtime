@@ -28,14 +28,14 @@ const int kMaxSignificantDigits = 772;
 
 
 inline bool isDigit(int x, int radix) {
-  return (x >= '0' && x <= '9' && x < '0' + radix)
-      || (radix > 10 && x >= 'a' && x < 'a' + radix - 10)
-      || (radix > 10 && x >= 'A' && x < 'A' + radix - 10);
+    return (x >= '0' && x <= '9' && x < '0' + radix)
+           || (radix > 10 && x >= 'a' && x < 'a' + radix - 10)
+           || (radix > 10 && x >= 'A' && x < 'A' + radix - 10);
 }
 
 
 inline bool isBinaryDigit(int x) {
-  return x == '0' || x == '1';
+    return x == '0' || x == '1';
 }
 
 
@@ -44,9 +44,13 @@ inline bool isBinaryDigit(int x) {
 // If x is NaN, the result is INT_MIN.  Otherwise the result is the argument x,
 // clamped to [INT_MIN, INT_MAX] and then rounded to an integer.
 inline int FastD2IChecked(double x) {
-  if (!(x >= INT_MIN)) return INT_MIN;  // Negation to catch NaNs.
-  if (x > INT_MAX) return INT_MAX;
-  return static_cast<int>(x);
+    if (!(x >= INT_MIN)) {
+        return INT_MIN;    // Negation to catch NaNs.
+    }
+    if (x > INT_MAX) {
+        return INT_MAX;
+    }
+    return static_cast<int>(x);
 }
 
 
@@ -55,25 +59,25 @@ inline int FastD2IChecked(double x) {
 // The result is unspecified if x is infinite or NaN, or if the rounded
 // integer value is outside the range of type int.
 inline int FastD2I(double x) {
-  return static_cast<int32_t>(x);
+    return static_cast<int32_t>(x);
 }
 
 inline unsigned int FastD2UI(double x);
 
 
 inline double FastI2D(int x) {
-  // There is no rounding involved in converting an integer to a
-  // double, so this code should compile to a few instructions without
-  // any FPU pipeline stalls.
-  return static_cast<double>(x);
+    // There is no rounding involved in converting an integer to a
+    // double, so this code should compile to a few instructions without
+    // any FPU pipeline stalls.
+    return static_cast<double>(x);
 }
 
 
 inline double FastUI2D(unsigned x) {
-  // There is no rounding involved in converting an unsigned integer to a
-  // double, so this code should compile to a few instructions without
-  // any FPU pipeline stalls.
-  return static_cast<double>(x);
+    // There is no rounding involved in converting an unsigned integer to a
+    // double, so this code should compile to a few instructions without
+    // any FPU pipeline stalls.
+    return static_cast<double>(x);
 }
 
 
@@ -96,12 +100,12 @@ inline uint32_t DoubleToUint32(double x);
 // Enumeration for allowing octals and ignoring junk when converting
 // strings to numbers.
 enum ConversionFlags {
-  NO_FLAGS = 0,
-  ALLOW_HEX = 1,
-  ALLOW_OCTAL = 2,
-  ALLOW_IMPLICIT_OCTAL = 4,
-  ALLOW_BINARY = 8,
-  ALLOW_TRAILING_JUNK = 16
+    NO_FLAGS = 0,
+    ALLOW_HEX = 1,
+    ALLOW_OCTAL = 2,
+    ALLOW_IMPLICIT_OCTAL = 4,
+    ALLOW_BINARY = 8,
+    ALLOW_TRAILING_JUNK = 16
 };
 
 
@@ -149,7 +153,7 @@ char* DoubleToPrecisionCString(double value, int f);
 char* DoubleToRadixCString(double value, int radix);
 
 static inline bool IsMinusZero(double value) {
-  return bit_cast<int64_t>(value) == bit_cast<int64_t>(-0.0);
+    return bit_cast<int64_t>(value) == bit_cast<int64_t>(-0.0);
 }
 
 // Returns true if value can be converted to a SMI, and returns the resulting

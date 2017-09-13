@@ -35,19 +35,19 @@
 namespace v8_inspector {
 
 struct ScriptBreakpoint {
-  ScriptBreakpoint() {}
+    ScriptBreakpoint() {}
 
-  ScriptBreakpoint(String16 script_id, int line_number, int column_number,
-                   String16 condition)
-      : script_id(std::move(script_id)),
-        line_number(line_number),
-        column_number(column_number),
-        condition(std::move(condition)) {}
+    ScriptBreakpoint(String16 script_id, int line_number, int column_number,
+                     String16 condition)
+        : script_id(std::move(script_id)),
+          line_number(line_number),
+          column_number(column_number),
+          condition(std::move(condition)) {}
 
-  String16 script_id;
-  int line_number = 0;
-  int column_number = 0;
-  String16 condition;
+    String16 script_id;
+    int line_number = 0;
+    int column_number = 0;
+    String16 condition;
 };
 
 }  // namespace v8_inspector

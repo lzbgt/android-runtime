@@ -27,8 +27,8 @@ inline bool IsRegExpWord(uc32 c);
 inline bool IsRegExpNewline(uc32 c);
 
 struct V8_EXPORT_PRIVATE SupplementaryPlanes {
-  static bool IsIDStart(uc32 c);
-  static bool IsIDPart(uc32 c);
+    static bool IsIDStart(uc32 c);
+    static bool IsIDPart(uc32 c);
 };
 
 
@@ -39,10 +39,12 @@ struct V8_EXPORT_PRIVATE SupplementaryPlanes {
 // 'Pattern_Syntax' or 'Pattern_White_Space'.
 // For code points in the SMPs, we can resort to ICU (if available).
 struct IdentifierStart {
-  static inline bool Is(uc32 c) {
-    if (c > 0xFFFF) return SupplementaryPlanes::IsIDStart(c);
-    return unibrow::ID_Start::Is(c);
-  }
+    static inline bool Is(uc32 c) {
+        if (c > 0xFFFF) {
+            return SupplementaryPlanes::IsIDStart(c);
+        }
+        return unibrow::ID_Start::Is(c);
+    }
 };
 
 
@@ -53,10 +55,12 @@ struct IdentifierStart {
 // 'Pattern_Syntax' or 'Pattern_White_Space'.
 // For code points in the SMPs, we can resort to ICU (if available).
 struct IdentifierPart {
-  static inline bool Is(uc32 c) {
-    if (c > 0xFFFF) return SupplementaryPlanes::IsIDPart(c);
-    return unibrow::ID_Start::Is(c) || unibrow::ID_Continue::Is(c);
-  }
+    static inline bool Is(uc32 c) {
+        if (c > 0xFFFF) {
+            return SupplementaryPlanes::IsIDPart(c);
+        }
+        return unibrow::ID_Start::Is(c) || unibrow::ID_Continue::Is(c);
+    }
 };
 
 
@@ -67,16 +71,18 @@ struct IdentifierPart {
 // Further included are \u0009, \u000b, \u0020, \u00a0, \u000c, and \ufeff.
 // There are no category 'Zs' code points in the SMPs.
 struct WhiteSpace {
-  static inline bool Is(uc32 c) { return unibrow::WhiteSpace::Is(c); }
+    static inline bool Is(uc32 c) {
+        return unibrow::WhiteSpace::Is(c);
+    }
 };
 
 
 // WhiteSpace and LineTerminator according to ES6 draft section 11.2 and 11.3
 // This consists of \000a, \000d, \u2028, and \u2029.
 struct WhiteSpaceOrLineTerminator {
-  static inline bool Is(uc32 c) {
-    return WhiteSpace::Is(c) || unibrow::LineTerminator::Is(c);
-  }
+    static inline bool Is(uc32 c) {
+        return WhiteSpace::Is(c) || unibrow::LineTerminator::Is(c);
+    }
 };
 
 }  // namespace internal

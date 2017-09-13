@@ -34,7 +34,7 @@ class V8PageAgentImpl : public protocol::Page::Backend {
         DispatchResponse searchInResource(const String& in_frameId, const String& in_url, const String& in_query, Maybe<bool> in_caseSensitive, Maybe<bool> in_isRegex, Maybe<String> in_requestId, std::unique_ptr<v8_inspector::protocol::Array<protocol::GenericTypes::SearchMatch>>* out_result) override;
         DispatchResponse searchInResources(const String& in_text, Maybe<bool> in_caseSensitive, Maybe<bool> in_isRegex, std::unique_ptr<v8_inspector::protocol::Array<protocol::Page::SearchResult>>* out_result) override;
         DispatchResponse setDocumentContent(const String& in_frameId, const String& in_html) override;
-    
+
         void restore();
         void reset();
         const bool enabled() {

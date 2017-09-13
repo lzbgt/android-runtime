@@ -18,8 +18,7 @@ const char Metainfo::domainName[] = "Debugger";
 const char Metainfo::commandPrefix[] = "Debugger.";
 const char Metainfo::version[] = "1.2";
 
-std::unique_ptr<Location> Location::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<Location> Location::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -40,29 +39,28 @@ std::unique_ptr<Location> Location::fromValue(protocol::Value* value, ErrorSuppo
         result->m_columnNumber = ValueConversions<int>::fromValue(columnNumberValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> Location::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> Location::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("scriptId", ValueConversions<String>::toValue(m_scriptId));
     result->setValue("lineNumber", ValueConversions<int>::toValue(m_lineNumber));
-    if (m_columnNumber.isJust())
+    if (m_columnNumber.isJust()) {
         result->setValue("columnNumber", ValueConversions<int>::toValue(m_columnNumber.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<Location> Location::clone() const
-{
+std::unique_ptr<Location> Location::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<ScriptPosition> ScriptPosition::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<ScriptPosition> ScriptPosition::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -78,27 +76,25 @@ std::unique_ptr<ScriptPosition> ScriptPosition::fromValue(protocol::Value* value
     errors->setName("columnNumber");
     result->m_columnNumber = ValueConversions<int>::fromValue(columnNumberValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> ScriptPosition::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> ScriptPosition::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("lineNumber", ValueConversions<int>::toValue(m_lineNumber));
     result->setValue("columnNumber", ValueConversions<int>::toValue(m_columnNumber));
     return result;
 }
 
-std::unique_ptr<ScriptPosition> ScriptPosition::clone() const
-{
+std::unique_ptr<ScriptPosition> ScriptPosition::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<CallFrame> CallFrame::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<CallFrame> CallFrame::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -133,28 +129,29 @@ std::unique_ptr<CallFrame> CallFrame::fromValue(protocol::Value* value, ErrorSup
         result->m_returnValue = ValueConversions<protocol::Runtime::RemoteObject>::fromValue(returnValueValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> CallFrame::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> CallFrame::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("callFrameId", ValueConversions<String>::toValue(m_callFrameId));
     result->setValue("functionName", ValueConversions<String>::toValue(m_functionName));
-    if (m_functionLocation.isJust())
+    if (m_functionLocation.isJust()) {
         result->setValue("functionLocation", ValueConversions<protocol::Debugger::Location>::toValue(m_functionLocation.fromJust()));
+    }
     result->setValue("location", ValueConversions<protocol::Debugger::Location>::toValue(m_location.get()));
     result->setValue("scopeChain", ValueConversions<protocol::Array<protocol::Debugger::Scope>>::toValue(m_scopeChain.get()));
     result->setValue("this", ValueConversions<protocol::Runtime::RemoteObject>::toValue(m_this.get()));
-    if (m_returnValue.isJust())
+    if (m_returnValue.isJust()) {
         result->setValue("returnValue", ValueConversions<protocol::Runtime::RemoteObject>::toValue(m_returnValue.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<CallFrame> CallFrame::clone() const
-{
+std::unique_ptr<CallFrame> CallFrame::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
@@ -169,8 +166,7 @@ const char* Scope::TypeEnum::Script = "script";
 const char* Scope::TypeEnum::Eval = "eval";
 const char* Scope::TypeEnum::Module = "module";
 
-std::unique_ptr<Scope> Scope::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<Scope> Scope::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -201,33 +197,34 @@ std::unique_ptr<Scope> Scope::fromValue(protocol::Value* value, ErrorSupport* er
         result->m_endLocation = ValueConversions<protocol::Debugger::Location>::fromValue(endLocationValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> Scope::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> Scope::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("type", ValueConversions<String>::toValue(m_type));
     result->setValue("object", ValueConversions<protocol::Runtime::RemoteObject>::toValue(m_object.get()));
-    if (m_name.isJust())
+    if (m_name.isJust()) {
         result->setValue("name", ValueConversions<String>::toValue(m_name.fromJust()));
-    if (m_startLocation.isJust())
+    }
+    if (m_startLocation.isJust()) {
         result->setValue("startLocation", ValueConversions<protocol::Debugger::Location>::toValue(m_startLocation.fromJust()));
-    if (m_endLocation.isJust())
+    }
+    if (m_endLocation.isJust()) {
         result->setValue("endLocation", ValueConversions<protocol::Debugger::Location>::toValue(m_endLocation.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<Scope> Scope::clone() const
-{
+std::unique_ptr<Scope> Scope::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<SearchMatch> SearchMatch::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<SearchMatch> SearchMatch::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -243,38 +240,36 @@ std::unique_ptr<SearchMatch> SearchMatch::fromValue(protocol::Value* value, Erro
     errors->setName("lineContent");
     result->m_lineContent = ValueConversions<String>::fromValue(lineContentValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> SearchMatch::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> SearchMatch::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("lineNumber", ValueConversions<double>::toValue(m_lineNumber));
     result->setValue("lineContent", ValueConversions<String>::toValue(m_lineContent));
     return result;
 }
 
-std::unique_ptr<SearchMatch> SearchMatch::clone() const
-{
+std::unique_ptr<SearchMatch> SearchMatch::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<StringBuffer> SearchMatch::toJSONString() const
-{
+std::unique_ptr<StringBuffer> SearchMatch::toJSONString() const {
     String json = toValue()->serialize();
     return StringBufferImpl::adopt(json);
 }
 
 // static
-std::unique_ptr<API::SearchMatch> API::SearchMatch::fromJSONString(const StringView& json)
-{
+std::unique_ptr<API::SearchMatch> API::SearchMatch::fromJSONString(const StringView& json) {
     ErrorSupport errors;
     std::unique_ptr<Value> value = StringUtil::parseJSON(json);
-    if (!value)
+    if (!value) {
         return nullptr;
+    }
     return protocol::Debugger::SearchMatch::fromValue(value.get(), &errors);
 }
 
@@ -282,8 +277,7 @@ const char* BreakLocation::TypeEnum::DebuggerStatement = "debuggerStatement";
 const char* BreakLocation::TypeEnum::Call = "call";
 const char* BreakLocation::TypeEnum::Return = "return";
 
-std::unique_ptr<BreakLocation> BreakLocation::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<BreakLocation> BreakLocation::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -309,31 +303,31 @@ std::unique_ptr<BreakLocation> BreakLocation::fromValue(protocol::Value* value, 
         result->m_type = ValueConversions<String>::fromValue(typeValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> BreakLocation::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> BreakLocation::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("scriptId", ValueConversions<String>::toValue(m_scriptId));
     result->setValue("lineNumber", ValueConversions<int>::toValue(m_lineNumber));
-    if (m_columnNumber.isJust())
+    if (m_columnNumber.isJust()) {
         result->setValue("columnNumber", ValueConversions<int>::toValue(m_columnNumber.fromJust()));
-    if (m_type.isJust())
+    }
+    if (m_type.isJust()) {
         result->setValue("type", ValueConversions<String>::toValue(m_type.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<BreakLocation> BreakLocation::clone() const
-{
+std::unique_ptr<BreakLocation> BreakLocation::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<ScriptParsedNotification> ScriptParsedNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<ScriptParsedNotification> ScriptParsedNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -402,13 +396,13 @@ std::unique_ptr<ScriptParsedNotification> ScriptParsedNotification::fromValue(pr
         result->m_stackTrace = ValueConversions<protocol::Runtime::StackTrace>::fromValue(stackTraceValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> ScriptParsedNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> ScriptParsedNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("scriptId", ValueConversions<String>::toValue(m_scriptId));
     result->setValue("url", ValueConversions<String>::toValue(m_url));
@@ -418,31 +412,36 @@ std::unique_ptr<protocol::DictionaryValue> ScriptParsedNotification::toValue() c
     result->setValue("endColumn", ValueConversions<int>::toValue(m_endColumn));
     result->setValue("executionContextId", ValueConversions<int>::toValue(m_executionContextId));
     result->setValue("hash", ValueConversions<String>::toValue(m_hash));
-    if (m_executionContextAuxData.isJust())
+    if (m_executionContextAuxData.isJust()) {
         result->setValue("executionContextAuxData", ValueConversions<protocol::DictionaryValue>::toValue(m_executionContextAuxData.fromJust()));
-    if (m_isLiveEdit.isJust())
+    }
+    if (m_isLiveEdit.isJust()) {
         result->setValue("isLiveEdit", ValueConversions<bool>::toValue(m_isLiveEdit.fromJust()));
-    if (m_sourceMapURL.isJust())
+    }
+    if (m_sourceMapURL.isJust()) {
         result->setValue("sourceMapURL", ValueConversions<String>::toValue(m_sourceMapURL.fromJust()));
-    if (m_hasSourceURL.isJust())
+    }
+    if (m_hasSourceURL.isJust()) {
         result->setValue("hasSourceURL", ValueConversions<bool>::toValue(m_hasSourceURL.fromJust()));
-    if (m_isModule.isJust())
+    }
+    if (m_isModule.isJust()) {
         result->setValue("isModule", ValueConversions<bool>::toValue(m_isModule.fromJust()));
-    if (m_length.isJust())
+    }
+    if (m_length.isJust()) {
         result->setValue("length", ValueConversions<int>::toValue(m_length.fromJust()));
-    if (m_stackTrace.isJust())
+    }
+    if (m_stackTrace.isJust()) {
         result->setValue("stackTrace", ValueConversions<protocol::Runtime::StackTrace>::toValue(m_stackTrace.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<ScriptParsedNotification> ScriptParsedNotification::clone() const
-{
+std::unique_ptr<ScriptParsedNotification> ScriptParsedNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<ScriptFailedToParseNotification> ScriptFailedToParseNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<ScriptFailedToParseNotification> ScriptFailedToParseNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -506,13 +505,13 @@ std::unique_ptr<ScriptFailedToParseNotification> ScriptFailedToParseNotification
         result->m_stackTrace = ValueConversions<protocol::Runtime::StackTrace>::fromValue(stackTraceValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> ScriptFailedToParseNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> ScriptFailedToParseNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("scriptId", ValueConversions<String>::toValue(m_scriptId));
     result->setValue("url", ValueConversions<String>::toValue(m_url));
@@ -522,29 +521,33 @@ std::unique_ptr<protocol::DictionaryValue> ScriptFailedToParseNotification::toVa
     result->setValue("endColumn", ValueConversions<int>::toValue(m_endColumn));
     result->setValue("executionContextId", ValueConversions<int>::toValue(m_executionContextId));
     result->setValue("hash", ValueConversions<String>::toValue(m_hash));
-    if (m_executionContextAuxData.isJust())
+    if (m_executionContextAuxData.isJust()) {
         result->setValue("executionContextAuxData", ValueConversions<protocol::DictionaryValue>::toValue(m_executionContextAuxData.fromJust()));
-    if (m_sourceMapURL.isJust())
+    }
+    if (m_sourceMapURL.isJust()) {
         result->setValue("sourceMapURL", ValueConversions<String>::toValue(m_sourceMapURL.fromJust()));
-    if (m_hasSourceURL.isJust())
+    }
+    if (m_hasSourceURL.isJust()) {
         result->setValue("hasSourceURL", ValueConversions<bool>::toValue(m_hasSourceURL.fromJust()));
-    if (m_isModule.isJust())
+    }
+    if (m_isModule.isJust()) {
         result->setValue("isModule", ValueConversions<bool>::toValue(m_isModule.fromJust()));
-    if (m_length.isJust())
+    }
+    if (m_length.isJust()) {
         result->setValue("length", ValueConversions<int>::toValue(m_length.fromJust()));
-    if (m_stackTrace.isJust())
+    }
+    if (m_stackTrace.isJust()) {
         result->setValue("stackTrace", ValueConversions<protocol::Runtime::StackTrace>::toValue(m_stackTrace.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<ScriptFailedToParseNotification> ScriptFailedToParseNotification::clone() const
-{
+std::unique_ptr<ScriptFailedToParseNotification> ScriptFailedToParseNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<BreakpointResolvedNotification> BreakpointResolvedNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<BreakpointResolvedNotification> BreakpointResolvedNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -560,21 +563,20 @@ std::unique_ptr<BreakpointResolvedNotification> BreakpointResolvedNotification::
     errors->setName("location");
     result->m_location = ValueConversions<protocol::Debugger::Location>::fromValue(locationValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> BreakpointResolvedNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> BreakpointResolvedNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("breakpointId", ValueConversions<String>::toValue(m_breakpointId));
     result->setValue("location", ValueConversions<protocol::Debugger::Location>::toValue(m_location.get()));
     return result;
 }
 
-std::unique_ptr<BreakpointResolvedNotification> BreakpointResolvedNotification::clone() const
-{
+std::unique_ptr<BreakpointResolvedNotification> BreakpointResolvedNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
@@ -590,8 +592,7 @@ const char* PausedNotification::ReasonEnum::OOM = "OOM";
 const char* PausedNotification::ReasonEnum::Other = "other";
 const char* PausedNotification::ReasonEnum::Ambiguous = "ambiguous";
 
-std::unique_ptr<PausedNotification> PausedNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<PausedNotification> PausedNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -622,27 +623,29 @@ std::unique_ptr<PausedNotification> PausedNotification::fromValue(protocol::Valu
         result->m_asyncStackTrace = ValueConversions<protocol::Runtime::StackTrace>::fromValue(asyncStackTraceValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> PausedNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> PausedNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("callFrames", ValueConversions<protocol::Array<protocol::Debugger::CallFrame>>::toValue(m_callFrames.get()));
     result->setValue("reason", ValueConversions<String>::toValue(m_reason));
-    if (m_data.isJust())
+    if (m_data.isJust()) {
         result->setValue("data", ValueConversions<protocol::DictionaryValue>::toValue(m_data.fromJust()));
-    if (m_hitBreakpoints.isJust())
+    }
+    if (m_hitBreakpoints.isJust()) {
         result->setValue("hitBreakpoints", ValueConversions<protocol::Array<String>>::toValue(m_hitBreakpoints.fromJust()));
-    if (m_asyncStackTrace.isJust())
+    }
+    if (m_asyncStackTrace.isJust()) {
         result->setValue("asyncStackTrace", ValueConversions<protocol::Runtime::StackTrace>::toValue(m_asyncStackTrace.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<PausedNotification> PausedNotification::clone() const
-{
+std::unique_ptr<PausedNotification> PausedNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
@@ -699,189 +702,203 @@ const char* Ambiguous = "ambiguous";
 
 // ------------- Frontend notifications.
 
-void Frontend::scriptParsed(const String& scriptId, const String& url, int startLine, int startColumn, int endLine, int endColumn, int executionContextId, const String& hash, Maybe<protocol::DictionaryValue> executionContextAuxData, Maybe<bool> isLiveEdit, Maybe<String> sourceMapURL, Maybe<bool> hasSourceURL, Maybe<bool> isModule, Maybe<int> length, Maybe<protocol::Runtime::StackTrace> stackTrace)
-{
-    if (!m_frontendChannel)
+void Frontend::scriptParsed(const String& scriptId, const String& url, int startLine, int startColumn, int endLine, int endColumn, int executionContextId, const String& hash, Maybe<protocol::DictionaryValue> executionContextAuxData, Maybe<bool> isLiveEdit, Maybe<String> sourceMapURL, Maybe<bool> hasSourceURL, Maybe<bool> isModule, Maybe<int> length, Maybe<protocol::Runtime::StackTrace> stackTrace) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<ScriptParsedNotification> messageData = ScriptParsedNotification::create()
-        .setScriptId(scriptId)
-        .setUrl(url)
-        .setStartLine(startLine)
-        .setStartColumn(startColumn)
-        .setEndLine(endLine)
-        .setEndColumn(endColumn)
-        .setExecutionContextId(executionContextId)
-        .setHash(hash)
-        .build();
-    if (executionContextAuxData.isJust())
+            .setScriptId(scriptId)
+            .setUrl(url)
+            .setStartLine(startLine)
+            .setStartColumn(startColumn)
+            .setEndLine(endLine)
+            .setEndColumn(endColumn)
+            .setExecutionContextId(executionContextId)
+            .setHash(hash)
+            .build();
+    if (executionContextAuxData.isJust()) {
         messageData->setExecutionContextAuxData(std::move(executionContextAuxData).takeJust());
-    if (isLiveEdit.isJust())
+    }
+    if (isLiveEdit.isJust()) {
         messageData->setIsLiveEdit(std::move(isLiveEdit).takeJust());
-    if (sourceMapURL.isJust())
+    }
+    if (sourceMapURL.isJust()) {
         messageData->setSourceMapURL(std::move(sourceMapURL).takeJust());
-    if (hasSourceURL.isJust())
+    }
+    if (hasSourceURL.isJust()) {
         messageData->setHasSourceURL(std::move(hasSourceURL).takeJust());
-    if (isModule.isJust())
+    }
+    if (isModule.isJust()) {
         messageData->setIsModule(std::move(isModule).takeJust());
-    if (length.isJust())
+    }
+    if (length.isJust()) {
         messageData->setLength(std::move(length).takeJust());
-    if (stackTrace.isJust())
+    }
+    if (stackTrace.isJust()) {
         messageData->setStackTrace(std::move(stackTrace).takeJust());
+    }
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Debugger.scriptParsed", std::move(messageData)));
 }
 
-void Frontend::scriptFailedToParse(const String& scriptId, const String& url, int startLine, int startColumn, int endLine, int endColumn, int executionContextId, const String& hash, Maybe<protocol::DictionaryValue> executionContextAuxData, Maybe<String> sourceMapURL, Maybe<bool> hasSourceURL, Maybe<bool> isModule, Maybe<int> length, Maybe<protocol::Runtime::StackTrace> stackTrace)
-{
-    if (!m_frontendChannel)
+void Frontend::scriptFailedToParse(const String& scriptId, const String& url, int startLine, int startColumn, int endLine, int endColumn, int executionContextId, const String& hash, Maybe<protocol::DictionaryValue> executionContextAuxData, Maybe<String> sourceMapURL, Maybe<bool> hasSourceURL, Maybe<bool> isModule, Maybe<int> length, Maybe<protocol::Runtime::StackTrace> stackTrace) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<ScriptFailedToParseNotification> messageData = ScriptFailedToParseNotification::create()
-        .setScriptId(scriptId)
-        .setUrl(url)
-        .setStartLine(startLine)
-        .setStartColumn(startColumn)
-        .setEndLine(endLine)
-        .setEndColumn(endColumn)
-        .setExecutionContextId(executionContextId)
-        .setHash(hash)
-        .build();
-    if (executionContextAuxData.isJust())
+            .setScriptId(scriptId)
+            .setUrl(url)
+            .setStartLine(startLine)
+            .setStartColumn(startColumn)
+            .setEndLine(endLine)
+            .setEndColumn(endColumn)
+            .setExecutionContextId(executionContextId)
+            .setHash(hash)
+            .build();
+    if (executionContextAuxData.isJust()) {
         messageData->setExecutionContextAuxData(std::move(executionContextAuxData).takeJust());
-    if (sourceMapURL.isJust())
+    }
+    if (sourceMapURL.isJust()) {
         messageData->setSourceMapURL(std::move(sourceMapURL).takeJust());
-    if (hasSourceURL.isJust())
+    }
+    if (hasSourceURL.isJust()) {
         messageData->setHasSourceURL(std::move(hasSourceURL).takeJust());
-    if (isModule.isJust())
+    }
+    if (isModule.isJust()) {
         messageData->setIsModule(std::move(isModule).takeJust());
-    if (length.isJust())
+    }
+    if (length.isJust()) {
         messageData->setLength(std::move(length).takeJust());
-    if (stackTrace.isJust())
+    }
+    if (stackTrace.isJust()) {
         messageData->setStackTrace(std::move(stackTrace).takeJust());
+    }
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Debugger.scriptFailedToParse", std::move(messageData)));
 }
 
-void Frontend::breakpointResolved(const String& breakpointId, std::unique_ptr<protocol::Debugger::Location> location)
-{
-    if (!m_frontendChannel)
+void Frontend::breakpointResolved(const String& breakpointId, std::unique_ptr<protocol::Debugger::Location> location) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<BreakpointResolvedNotification> messageData = BreakpointResolvedNotification::create()
-        .setBreakpointId(breakpointId)
-        .setLocation(std::move(location))
-        .build();
+            .setBreakpointId(breakpointId)
+            .setLocation(std::move(location))
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Debugger.breakpointResolved", std::move(messageData)));
 }
 
-void Frontend::paused(std::unique_ptr<protocol::Array<protocol::Debugger::CallFrame>> callFrames, const String& reason, Maybe<protocol::DictionaryValue> data, Maybe<protocol::Array<String>> hitBreakpoints, Maybe<protocol::Runtime::StackTrace> asyncStackTrace)
-{
-    if (!m_frontendChannel)
+void Frontend::paused(std::unique_ptr<protocol::Array<protocol::Debugger::CallFrame>> callFrames, const String& reason, Maybe<protocol::DictionaryValue> data, Maybe<protocol::Array<String>> hitBreakpoints, Maybe<protocol::Runtime::StackTrace> asyncStackTrace) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<PausedNotification> messageData = PausedNotification::create()
-        .setCallFrames(std::move(callFrames))
-        .setReason(reason)
-        .build();
-    if (data.isJust())
+            .setCallFrames(std::move(callFrames))
+            .setReason(reason)
+            .build();
+    if (data.isJust()) {
         messageData->setData(std::move(data).takeJust());
-    if (hitBreakpoints.isJust())
+    }
+    if (hitBreakpoints.isJust()) {
         messageData->setHitBreakpoints(std::move(hitBreakpoints).takeJust());
-    if (asyncStackTrace.isJust())
+    }
+    if (asyncStackTrace.isJust()) {
         messageData->setAsyncStackTrace(std::move(asyncStackTrace).takeJust());
+    }
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Debugger.paused", std::move(messageData)));
 }
 
-void Frontend::resumed()
-{
-    if (!m_frontendChannel)
+void Frontend::resumed() {
+    if (!m_frontendChannel) {
         return;
+    }
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("Debugger.resumed"));
 }
 
-void Frontend::flush()
-{
+void Frontend::flush() {
     m_frontendChannel->flushProtocolNotifications();
 }
 
-void Frontend::sendRawNotification(const String& notification)
-{
+void Frontend::sendRawNotification(const String& notification) {
     m_frontendChannel->sendProtocolNotification(InternalRawNotification::create(notification));
 }
 
 // --------------------- Dispatcher.
 
 class DispatcherImpl : public protocol::DispatcherBase {
-public:
-    DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
-        : DispatcherBase(frontendChannel)
-        , m_backend(backend)
-        , m_fallThroughForNotFound(fallThroughForNotFound) {
-        m_dispatchMap["Debugger.enable"] = &DispatcherImpl::enable;
-        m_dispatchMap["Debugger.disable"] = &DispatcherImpl::disable;
-        m_dispatchMap["Debugger.setBreakpointsActive"] = &DispatcherImpl::setBreakpointsActive;
-        m_dispatchMap["Debugger.setSkipAllPauses"] = &DispatcherImpl::setSkipAllPauses;
-        m_dispatchMap["Debugger.setBreakpointByUrl"] = &DispatcherImpl::setBreakpointByUrl;
-        m_dispatchMap["Debugger.setBreakpoint"] = &DispatcherImpl::setBreakpoint;
-        m_dispatchMap["Debugger.removeBreakpoint"] = &DispatcherImpl::removeBreakpoint;
-        m_dispatchMap["Debugger.getPossibleBreakpoints"] = &DispatcherImpl::getPossibleBreakpoints;
-        m_dispatchMap["Debugger.continueToLocation"] = &DispatcherImpl::continueToLocation;
-        m_dispatchMap["Debugger.stepOver"] = &DispatcherImpl::stepOver;
-        m_dispatchMap["Debugger.stepInto"] = &DispatcherImpl::stepInto;
-        m_dispatchMap["Debugger.stepOut"] = &DispatcherImpl::stepOut;
-        m_dispatchMap["Debugger.pause"] = &DispatcherImpl::pause;
-        m_dispatchMap["Debugger.scheduleStepIntoAsync"] = &DispatcherImpl::scheduleStepIntoAsync;
-        m_dispatchMap["Debugger.resume"] = &DispatcherImpl::resume;
-        m_dispatchMap["Debugger.searchInContent"] = &DispatcherImpl::searchInContent;
-        m_dispatchMap["Debugger.setScriptSource"] = &DispatcherImpl::setScriptSource;
-        m_dispatchMap["Debugger.restartFrame"] = &DispatcherImpl::restartFrame;
-        m_dispatchMap["Debugger.getScriptSource"] = &DispatcherImpl::getScriptSource;
-        m_dispatchMap["Debugger.setPauseOnExceptions"] = &DispatcherImpl::setPauseOnExceptions;
-        m_dispatchMap["Debugger.evaluateOnCallFrame"] = &DispatcherImpl::evaluateOnCallFrame;
-        m_dispatchMap["Debugger.setVariableValue"] = &DispatcherImpl::setVariableValue;
-        m_dispatchMap["Debugger.setAsyncCallStackDepth"] = &DispatcherImpl::setAsyncCallStackDepth;
-        m_dispatchMap["Debugger.setBlackboxPatterns"] = &DispatcherImpl::setBlackboxPatterns;
-        m_dispatchMap["Debugger.setBlackboxedRanges"] = &DispatcherImpl::setBlackboxedRanges;
-    }
-    ~DispatcherImpl() override { }
-    DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
+    public:
+        DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
+            : DispatcherBase(frontendChannel)
+            , m_backend(backend)
+            , m_fallThroughForNotFound(fallThroughForNotFound) {
+            m_dispatchMap["Debugger.enable"] = &DispatcherImpl::enable;
+            m_dispatchMap["Debugger.disable"] = &DispatcherImpl::disable;
+            m_dispatchMap["Debugger.setBreakpointsActive"] = &DispatcherImpl::setBreakpointsActive;
+            m_dispatchMap["Debugger.setSkipAllPauses"] = &DispatcherImpl::setSkipAllPauses;
+            m_dispatchMap["Debugger.setBreakpointByUrl"] = &DispatcherImpl::setBreakpointByUrl;
+            m_dispatchMap["Debugger.setBreakpoint"] = &DispatcherImpl::setBreakpoint;
+            m_dispatchMap["Debugger.removeBreakpoint"] = &DispatcherImpl::removeBreakpoint;
+            m_dispatchMap["Debugger.getPossibleBreakpoints"] = &DispatcherImpl::getPossibleBreakpoints;
+            m_dispatchMap["Debugger.continueToLocation"] = &DispatcherImpl::continueToLocation;
+            m_dispatchMap["Debugger.stepOver"] = &DispatcherImpl::stepOver;
+            m_dispatchMap["Debugger.stepInto"] = &DispatcherImpl::stepInto;
+            m_dispatchMap["Debugger.stepOut"] = &DispatcherImpl::stepOut;
+            m_dispatchMap["Debugger.pause"] = &DispatcherImpl::pause;
+            m_dispatchMap["Debugger.scheduleStepIntoAsync"] = &DispatcherImpl::scheduleStepIntoAsync;
+            m_dispatchMap["Debugger.resume"] = &DispatcherImpl::resume;
+            m_dispatchMap["Debugger.searchInContent"] = &DispatcherImpl::searchInContent;
+            m_dispatchMap["Debugger.setScriptSource"] = &DispatcherImpl::setScriptSource;
+            m_dispatchMap["Debugger.restartFrame"] = &DispatcherImpl::restartFrame;
+            m_dispatchMap["Debugger.getScriptSource"] = &DispatcherImpl::getScriptSource;
+            m_dispatchMap["Debugger.setPauseOnExceptions"] = &DispatcherImpl::setPauseOnExceptions;
+            m_dispatchMap["Debugger.evaluateOnCallFrame"] = &DispatcherImpl::evaluateOnCallFrame;
+            m_dispatchMap["Debugger.setVariableValue"] = &DispatcherImpl::setVariableValue;
+            m_dispatchMap["Debugger.setAsyncCallStackDepth"] = &DispatcherImpl::setAsyncCallStackDepth;
+            m_dispatchMap["Debugger.setBlackboxPatterns"] = &DispatcherImpl::setBlackboxPatterns;
+            m_dispatchMap["Debugger.setBlackboxedRanges"] = &DispatcherImpl::setBlackboxedRanges;
+        }
+        ~DispatcherImpl() override { }
+        DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
 
-protected:
-    using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
-    using DispatchMap = protocol::HashMap<String, CallHandler>;
-    DispatchMap m_dispatchMap;
+    protected:
+        using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
+        using DispatchMap = protocol::HashMap<String, CallHandler>;
+        DispatchMap m_dispatchMap;
 
-    DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setBreakpointsActive(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setSkipAllPauses(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setBreakpointByUrl(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status removeBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status getPossibleBreakpoints(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status continueToLocation(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status stepOver(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status stepInto(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status stepOut(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status pause(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status scheduleStepIntoAsync(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status resume(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status searchInContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status restartFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status getScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setPauseOnExceptions(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status evaluateOnCallFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setVariableValue(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setAsyncCallStackDepth(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setBlackboxPatterns(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status setBlackboxedRanges(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setBreakpointsActive(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setSkipAllPauses(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setBreakpointByUrl(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status removeBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status getPossibleBreakpoints(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status continueToLocation(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status stepOver(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status stepInto(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status stepOut(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status pause(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status scheduleStepIntoAsync(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status resume(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status searchInContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status restartFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status getScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setPauseOnExceptions(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status evaluateOnCallFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setVariableValue(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setAsyncCallStackDepth(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setBlackboxPatterns(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status setBlackboxedRanges(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
 
-    Backend* m_backend;
-    bool m_fallThroughForNotFound;
+        Backend* m_backend;
+        bool m_fallThroughForNotFound;
 };
 
-DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject)
-{
+DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) {
     protocol::HashMap<String, CallHandler>::iterator it = m_dispatchMap.find(method);
     if (it == m_dispatchMap.end()) {
-        if (m_fallThroughForNotFound)
+        if (m_fallThroughForNotFound) {
             return DispatchResponse::kFallThrough;
+        }
         reportProtocolError(callId, DispatchResponse::kMethodNotFound, "'" + method + "' wasn't found", nullptr);
         return DispatchResponse::kError;
     }
@@ -891,28 +908,27 @@ DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& meth
 }
 
 
-DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->enable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->disable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setBreakpointsActive(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setBreakpointsActive(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -927,13 +943,13 @@ DispatchResponse::Status DispatcherImpl::setBreakpointsActive(int callId, std::u
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setBreakpointsActive(in_active);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setSkipAllPauses(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setSkipAllPauses(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -948,13 +964,13 @@ DispatchResponse::Status DispatcherImpl::setSkipAllPauses(int callId, std::uniqu
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setSkipAllPauses(in_skip);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setBreakpointByUrl(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setBreakpointByUrl(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -996,20 +1012,21 @@ DispatchResponse::Status DispatcherImpl::setBreakpointByUrl(int callId, std::uni
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setBreakpointByUrl(in_lineNumber, std::move(in_url), std::move(in_urlRegex), std::move(in_columnNumber), std::move(in_condition), &out_breakpointId, &out_locations);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("breakpointId", ValueConversions<String>::toValue(out_breakpointId));
         result->setValue("locations", ValueConversions<protocol::Array<protocol::Debugger::Location>>::toValue(out_locations.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1033,20 +1050,21 @@ DispatchResponse::Status DispatcherImpl::setBreakpoint(int callId, std::unique_p
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setBreakpoint(std::move(in_location), std::move(in_condition), &out_breakpointId, &out_actualLocation);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("breakpointId", ValueConversions<String>::toValue(out_breakpointId));
         result->setValue("actualLocation", ValueConversions<protocol::Debugger::Location>::toValue(out_actualLocation.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::removeBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::removeBreakpoint(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1061,13 +1079,13 @@ DispatchResponse::Status DispatcherImpl::removeBreakpoint(int callId, std::uniqu
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->removeBreakpoint(in_breakpointId);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::getPossibleBreakpoints(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::getPossibleBreakpoints(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1096,19 +1114,20 @@ DispatchResponse::Status DispatcherImpl::getPossibleBreakpoints(int callId, std:
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->getPossibleBreakpoints(std::move(in_start), std::move(in_end), std::move(in_restrictToFunction), &out_locations);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("locations", ValueConversions<protocol::Array<protocol::Debugger::BreakLocation>>::toValue(out_locations.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::continueToLocation(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::continueToLocation(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1129,76 +1148,73 @@ DispatchResponse::Status DispatcherImpl::continueToLocation(int callId, std::uni
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->continueToLocation(std::move(in_location), std::move(in_targetCallFrames));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::stepOver(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::stepOver(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->stepOver();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::stepInto(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::stepInto(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->stepInto();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::stepOut(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::stepOut(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->stepOut();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::pause(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::pause(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->pause();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
 class ScheduleStepIntoAsyncCallbackImpl : public Backend::ScheduleStepIntoAsyncCallback, public DispatcherBase::Callback {
-public:
-    ScheduleStepIntoAsyncCallbackImpl(std::unique_ptr<DispatcherBase::WeakPtr> backendImpl, int callId, int callbackId)
-        : DispatcherBase::Callback(std::move(backendImpl), callId, callbackId) { }
+    public:
+        ScheduleStepIntoAsyncCallbackImpl(std::unique_ptr<DispatcherBase::WeakPtr> backendImpl, int callId, int callbackId)
+            : DispatcherBase::Callback(std::move(backendImpl), callId, callbackId) { }
 
-    void sendSuccess() override
-    {
-        std::unique_ptr<protocol::DictionaryValue> resultObject = DictionaryValue::create();
-        sendIfActive(std::move(resultObject), DispatchResponse::OK());
-    }
+        void sendSuccess() override {
+            std::unique_ptr<protocol::DictionaryValue> resultObject = DictionaryValue::create();
+            sendIfActive(std::move(resultObject), DispatchResponse::OK());
+        }
 
-    void fallThrough() override
-    {
-        fallThroughIfActive();
-    }
+        void fallThrough() override {
+            fallThroughIfActive();
+        }
 
-    void sendFailure(const DispatchResponse& response) override
-    {
-        DCHECK(response.status() == DispatchResponse::kError);
-        sendIfActive(nullptr, response);
-    }
+        void sendFailure(const DispatchResponse& response) override {
+            DCHECK(response.status() == DispatchResponse::kError);
+            sendIfActive(nullptr, response);
+        }
 };
 
-DispatchResponse::Status DispatcherImpl::scheduleStepIntoAsync(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::scheduleStepIntoAsync(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     std::unique_ptr<ScheduleStepIntoAsyncCallbackImpl> callback(new ScheduleStepIntoAsyncCallbackImpl(weakPtr(), callId, nextCallbackId()));
@@ -1206,18 +1222,17 @@ DispatchResponse::Status DispatcherImpl::scheduleStepIntoAsync(int callId, std::
     return (weak->get() && weak->get()->lastCallbackFallThrough()) ? DispatchResponse::kFallThrough : DispatchResponse::kAsync;
 }
 
-DispatchResponse::Status DispatcherImpl::resume(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::resume(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->resume();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::searchInContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::searchInContent(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1249,19 +1264,20 @@ DispatchResponse::Status DispatcherImpl::searchInContent(int callId, std::unique
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->searchInContent(in_scriptId, in_query, std::move(in_caseSensitive), std::move(in_isRegex), &out_result);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("result", ValueConversions<protocol::Array<protocol::Debugger::SearchMatch>>::toValue(out_result.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1290,26 +1306,31 @@ DispatchResponse::Status DispatcherImpl::setScriptSource(int callId, std::unique
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setScriptSource(in_scriptId, in_scriptSource, std::move(in_dryRun), &out_callFrames, &out_stackChanged, &out_asyncStackTrace, &out_exceptionDetails);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
-        if (out_callFrames.isJust())
+        if (out_callFrames.isJust()) {
             result->setValue("callFrames", ValueConversions<protocol::Array<protocol::Debugger::CallFrame>>::toValue(out_callFrames.fromJust()));
-        if (out_stackChanged.isJust())
+        }
+        if (out_stackChanged.isJust()) {
             result->setValue("stackChanged", ValueConversions<bool>::toValue(out_stackChanged.fromJust()));
-        if (out_asyncStackTrace.isJust())
+        }
+        if (out_asyncStackTrace.isJust()) {
             result->setValue("asyncStackTrace", ValueConversions<protocol::Runtime::StackTrace>::toValue(out_asyncStackTrace.fromJust()));
-        if (out_exceptionDetails.isJust())
+        }
+        if (out_exceptionDetails.isJust()) {
             result->setValue("exceptionDetails", ValueConversions<protocol::Runtime::ExceptionDetails>::toValue(out_exceptionDetails.fromJust()));
+        }
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::restartFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::restartFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1327,21 +1348,23 @@ DispatchResponse::Status DispatcherImpl::restartFrame(int callId, std::unique_pt
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->restartFrame(in_callFrameId, &out_callFrames, &out_asyncStackTrace);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("callFrames", ValueConversions<protocol::Array<protocol::Debugger::CallFrame>>::toValue(out_callFrames.get()));
-        if (out_asyncStackTrace.isJust())
+        if (out_asyncStackTrace.isJust()) {
             result->setValue("asyncStackTrace", ValueConversions<protocol::Runtime::StackTrace>::toValue(out_asyncStackTrace.fromJust()));
+        }
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::getScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::getScriptSource(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1358,19 +1381,20 @@ DispatchResponse::Status DispatcherImpl::getScriptSource(int callId, std::unique
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->getScriptSource(in_scriptId, &out_scriptSource);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("scriptSource", ValueConversions<String>::toValue(out_scriptSource));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setPauseOnExceptions(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setPauseOnExceptions(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1385,13 +1409,13 @@ DispatchResponse::Status DispatcherImpl::setPauseOnExceptions(int callId, std::u
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setPauseOnExceptions(in_state);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::evaluateOnCallFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::evaluateOnCallFrame(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1448,21 +1472,23 @@ DispatchResponse::Status DispatcherImpl::evaluateOnCallFrame(int callId, std::un
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->evaluateOnCallFrame(in_callFrameId, in_expression, std::move(in_objectGroup), std::move(in_includeCommandLineAPI), std::move(in_silent), std::move(in_returnByValue), std::move(in_generatePreview), std::move(in_throwOnSideEffect), &out_result, &out_exceptionDetails);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("result", ValueConversions<protocol::Runtime::RemoteObject>::toValue(out_result.get()));
-        if (out_exceptionDetails.isJust())
+        if (out_exceptionDetails.isJust()) {
             result->setValue("exceptionDetails", ValueConversions<protocol::Runtime::ExceptionDetails>::toValue(out_exceptionDetails.fromJust()));
+        }
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setVariableValue(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setVariableValue(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1486,13 +1512,13 @@ DispatchResponse::Status DispatcherImpl::setVariableValue(int callId, std::uniqu
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setVariableValue(in_scopeNumber, in_variableName, std::move(in_newValue), in_callFrameId);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setAsyncCallStackDepth(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setAsyncCallStackDepth(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1507,13 +1533,13 @@ DispatchResponse::Status DispatcherImpl::setAsyncCallStackDepth(int callId, std:
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setAsyncCallStackDepth(in_maxDepth);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setBlackboxPatterns(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setBlackboxPatterns(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1528,13 +1554,13 @@ DispatchResponse::Status DispatcherImpl::setBlackboxPatterns(int callId, std::un
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setBlackboxPatterns(std::move(in_patterns));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::setBlackboxedRanges(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::setBlackboxedRanges(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -1552,14 +1578,14 @@ DispatchResponse::Status DispatcherImpl::setBlackboxedRanges(int callId, std::un
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->setBlackboxedRanges(in_scriptId, std::move(in_positions));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
 // static
-void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend)
-{
+void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend) {
     dispatcher->registerBackend("Debugger", std::unique_ptr<protocol::DispatcherBase>(new DispatcherImpl(dispatcher->channel(), backend, dispatcher->fallThroughForNotFound())));
 }
 

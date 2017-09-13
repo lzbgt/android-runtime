@@ -18,8 +18,7 @@ const char Metainfo::domainName[] = "HeapProfiler";
 const char Metainfo::commandPrefix[] = "HeapProfiler.";
 const char Metainfo::version[] = "1.2";
 
-std::unique_ptr<SamplingHeapProfileNode> SamplingHeapProfileNode::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<SamplingHeapProfileNode> SamplingHeapProfileNode::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -38,13 +37,13 @@ std::unique_ptr<SamplingHeapProfileNode> SamplingHeapProfileNode::fromValue(prot
     errors->setName("children");
     result->m_children = ValueConversions<protocol::Array<protocol::HeapProfiler::SamplingHeapProfileNode>>::fromValue(childrenValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> SamplingHeapProfileNode::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> SamplingHeapProfileNode::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("callFrame", ValueConversions<protocol::Runtime::CallFrame>::toValue(m_callFrame.get()));
     result->setValue("selfSize", ValueConversions<double>::toValue(m_selfSize));
@@ -52,14 +51,12 @@ std::unique_ptr<protocol::DictionaryValue> SamplingHeapProfileNode::toValue() co
     return result;
 }
 
-std::unique_ptr<SamplingHeapProfileNode> SamplingHeapProfileNode::clone() const
-{
+std::unique_ptr<SamplingHeapProfileNode> SamplingHeapProfileNode::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<SamplingHeapProfile> SamplingHeapProfile::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<SamplingHeapProfile> SamplingHeapProfile::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -72,26 +69,24 @@ std::unique_ptr<SamplingHeapProfile> SamplingHeapProfile::fromValue(protocol::Va
     errors->setName("head");
     result->m_head = ValueConversions<protocol::HeapProfiler::SamplingHeapProfileNode>::fromValue(headValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> SamplingHeapProfile::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> SamplingHeapProfile::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("head", ValueConversions<protocol::HeapProfiler::SamplingHeapProfileNode>::toValue(m_head.get()));
     return result;
 }
 
-std::unique_ptr<SamplingHeapProfile> SamplingHeapProfile::clone() const
-{
+std::unique_ptr<SamplingHeapProfile> SamplingHeapProfile::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<AddHeapSnapshotChunkNotification> AddHeapSnapshotChunkNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<AddHeapSnapshotChunkNotification> AddHeapSnapshotChunkNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -104,26 +99,24 @@ std::unique_ptr<AddHeapSnapshotChunkNotification> AddHeapSnapshotChunkNotificati
     errors->setName("chunk");
     result->m_chunk = ValueConversions<String>::fromValue(chunkValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> AddHeapSnapshotChunkNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> AddHeapSnapshotChunkNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("chunk", ValueConversions<String>::toValue(m_chunk));
     return result;
 }
 
-std::unique_ptr<AddHeapSnapshotChunkNotification> AddHeapSnapshotChunkNotification::clone() const
-{
+std::unique_ptr<AddHeapSnapshotChunkNotification> AddHeapSnapshotChunkNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<ReportHeapSnapshotProgressNotification> ReportHeapSnapshotProgressNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<ReportHeapSnapshotProgressNotification> ReportHeapSnapshotProgressNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -144,29 +137,28 @@ std::unique_ptr<ReportHeapSnapshotProgressNotification> ReportHeapSnapshotProgre
         result->m_finished = ValueConversions<bool>::fromValue(finishedValue, errors);
     }
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> ReportHeapSnapshotProgressNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> ReportHeapSnapshotProgressNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("done", ValueConversions<int>::toValue(m_done));
     result->setValue("total", ValueConversions<int>::toValue(m_total));
-    if (m_finished.isJust())
+    if (m_finished.isJust()) {
         result->setValue("finished", ValueConversions<bool>::toValue(m_finished.fromJust()));
+    }
     return result;
 }
 
-std::unique_ptr<ReportHeapSnapshotProgressNotification> ReportHeapSnapshotProgressNotification::clone() const
-{
+std::unique_ptr<ReportHeapSnapshotProgressNotification> ReportHeapSnapshotProgressNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<LastSeenObjectIdNotification> LastSeenObjectIdNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<LastSeenObjectIdNotification> LastSeenObjectIdNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -182,27 +174,25 @@ std::unique_ptr<LastSeenObjectIdNotification> LastSeenObjectIdNotification::from
     errors->setName("timestamp");
     result->m_timestamp = ValueConversions<double>::fromValue(timestampValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> LastSeenObjectIdNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> LastSeenObjectIdNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("lastSeenObjectId", ValueConversions<int>::toValue(m_lastSeenObjectId));
     result->setValue("timestamp", ValueConversions<double>::toValue(m_timestamp));
     return result;
 }
 
-std::unique_ptr<LastSeenObjectIdNotification> LastSeenObjectIdNotification::clone() const
-{
+std::unique_ptr<LastSeenObjectIdNotification> LastSeenObjectIdNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
 
-std::unique_ptr<HeapStatsUpdateNotification> HeapStatsUpdateNotification::fromValue(protocol::Value* value, ErrorSupport* errors)
-{
+std::unique_ptr<HeapStatsUpdateNotification> HeapStatsUpdateNotification::fromValue(protocol::Value* value, ErrorSupport* errors) {
     if (!value || value->type() != protocol::Value::TypeObject) {
         errors->addError("object expected");
         return nullptr;
@@ -215,20 +205,19 @@ std::unique_ptr<HeapStatsUpdateNotification> HeapStatsUpdateNotification::fromVa
     errors->setName("statsUpdate");
     result->m_statsUpdate = ValueConversions<protocol::Array<int>>::fromValue(statsUpdateValue, errors);
     errors->pop();
-    if (errors->hasErrors())
+    if (errors->hasErrors()) {
         return nullptr;
+    }
     return result;
 }
 
-std::unique_ptr<protocol::DictionaryValue> HeapStatsUpdateNotification::toValue() const
-{
+std::unique_ptr<protocol::DictionaryValue> HeapStatsUpdateNotification::toValue() const {
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     result->setValue("statsUpdate", ValueConversions<protocol::Array<int>>::toValue(m_statsUpdate.get()));
     return result;
 }
 
-std::unique_ptr<HeapStatsUpdateNotification> HeapStatsUpdateNotification::clone() const
-{
+std::unique_ptr<HeapStatsUpdateNotification> HeapStatsUpdateNotification::clone() const {
     ErrorSupport errors;
     return fromValue(toValue().get(), &errors);
 }
@@ -238,117 +227,116 @@ std::unique_ptr<HeapStatsUpdateNotification> HeapStatsUpdateNotification::clone(
 
 // ------------- Frontend notifications.
 
-void Frontend::addHeapSnapshotChunk(const String& chunk)
-{
-    if (!m_frontendChannel)
+void Frontend::addHeapSnapshotChunk(const String& chunk) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<AddHeapSnapshotChunkNotification> messageData = AddHeapSnapshotChunkNotification::create()
-        .setChunk(chunk)
-        .build();
+            .setChunk(chunk)
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("HeapProfiler.addHeapSnapshotChunk", std::move(messageData)));
 }
 
-void Frontend::resetProfiles()
-{
-    if (!m_frontendChannel)
+void Frontend::resetProfiles() {
+    if (!m_frontendChannel) {
         return;
+    }
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("HeapProfiler.resetProfiles"));
 }
 
-void Frontend::reportHeapSnapshotProgress(int done, int total, Maybe<bool> finished)
-{
-    if (!m_frontendChannel)
+void Frontend::reportHeapSnapshotProgress(int done, int total, Maybe<bool> finished) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<ReportHeapSnapshotProgressNotification> messageData = ReportHeapSnapshotProgressNotification::create()
-        .setDone(done)
-        .setTotal(total)
-        .build();
-    if (finished.isJust())
+            .setDone(done)
+            .setTotal(total)
+            .build();
+    if (finished.isJust()) {
         messageData->setFinished(std::move(finished).takeJust());
+    }
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("HeapProfiler.reportHeapSnapshotProgress", std::move(messageData)));
 }
 
-void Frontend::lastSeenObjectId(int lastSeenObjectId, double timestamp)
-{
-    if (!m_frontendChannel)
+void Frontend::lastSeenObjectId(int lastSeenObjectId, double timestamp) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<LastSeenObjectIdNotification> messageData = LastSeenObjectIdNotification::create()
-        .setLastSeenObjectId(lastSeenObjectId)
-        .setTimestamp(timestamp)
-        .build();
+            .setLastSeenObjectId(lastSeenObjectId)
+            .setTimestamp(timestamp)
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("HeapProfiler.lastSeenObjectId", std::move(messageData)));
 }
 
-void Frontend::heapStatsUpdate(std::unique_ptr<protocol::Array<int>> statsUpdate)
-{
-    if (!m_frontendChannel)
+void Frontend::heapStatsUpdate(std::unique_ptr<protocol::Array<int>> statsUpdate) {
+    if (!m_frontendChannel) {
         return;
+    }
     std::unique_ptr<HeapStatsUpdateNotification> messageData = HeapStatsUpdateNotification::create()
-        .setStatsUpdate(std::move(statsUpdate))
-        .build();
+            .setStatsUpdate(std::move(statsUpdate))
+            .build();
     m_frontendChannel->sendProtocolNotification(InternalResponse::createNotification("HeapProfiler.heapStatsUpdate", std::move(messageData)));
 }
 
-void Frontend::flush()
-{
+void Frontend::flush() {
     m_frontendChannel->flushProtocolNotifications();
 }
 
-void Frontend::sendRawNotification(const String& notification)
-{
+void Frontend::sendRawNotification(const String& notification) {
     m_frontendChannel->sendProtocolNotification(InternalRawNotification::create(notification));
 }
 
 // --------------------- Dispatcher.
 
 class DispatcherImpl : public protocol::DispatcherBase {
-public:
-    DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
-        : DispatcherBase(frontendChannel)
-        , m_backend(backend)
-        , m_fallThroughForNotFound(fallThroughForNotFound) {
-        m_dispatchMap["HeapProfiler.enable"] = &DispatcherImpl::enable;
-        m_dispatchMap["HeapProfiler.disable"] = &DispatcherImpl::disable;
-        m_dispatchMap["HeapProfiler.startTrackingHeapObjects"] = &DispatcherImpl::startTrackingHeapObjects;
-        m_dispatchMap["HeapProfiler.stopTrackingHeapObjects"] = &DispatcherImpl::stopTrackingHeapObjects;
-        m_dispatchMap["HeapProfiler.takeHeapSnapshot"] = &DispatcherImpl::takeHeapSnapshot;
-        m_dispatchMap["HeapProfiler.collectGarbage"] = &DispatcherImpl::collectGarbage;
-        m_dispatchMap["HeapProfiler.getObjectByHeapObjectId"] = &DispatcherImpl::getObjectByHeapObjectId;
-        m_dispatchMap["HeapProfiler.addInspectedHeapObject"] = &DispatcherImpl::addInspectedHeapObject;
-        m_dispatchMap["HeapProfiler.getHeapObjectId"] = &DispatcherImpl::getHeapObjectId;
-        m_dispatchMap["HeapProfiler.startSampling"] = &DispatcherImpl::startSampling;
-        m_dispatchMap["HeapProfiler.stopSampling"] = &DispatcherImpl::stopSampling;
-    }
-    ~DispatcherImpl() override { }
-    DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
+    public:
+        DispatcherImpl(FrontendChannel* frontendChannel, Backend* backend, bool fallThroughForNotFound)
+            : DispatcherBase(frontendChannel)
+            , m_backend(backend)
+            , m_fallThroughForNotFound(fallThroughForNotFound) {
+            m_dispatchMap["HeapProfiler.enable"] = &DispatcherImpl::enable;
+            m_dispatchMap["HeapProfiler.disable"] = &DispatcherImpl::disable;
+            m_dispatchMap["HeapProfiler.startTrackingHeapObjects"] = &DispatcherImpl::startTrackingHeapObjects;
+            m_dispatchMap["HeapProfiler.stopTrackingHeapObjects"] = &DispatcherImpl::stopTrackingHeapObjects;
+            m_dispatchMap["HeapProfiler.takeHeapSnapshot"] = &DispatcherImpl::takeHeapSnapshot;
+            m_dispatchMap["HeapProfiler.collectGarbage"] = &DispatcherImpl::collectGarbage;
+            m_dispatchMap["HeapProfiler.getObjectByHeapObjectId"] = &DispatcherImpl::getObjectByHeapObjectId;
+            m_dispatchMap["HeapProfiler.addInspectedHeapObject"] = &DispatcherImpl::addInspectedHeapObject;
+            m_dispatchMap["HeapProfiler.getHeapObjectId"] = &DispatcherImpl::getHeapObjectId;
+            m_dispatchMap["HeapProfiler.startSampling"] = &DispatcherImpl::startSampling;
+            m_dispatchMap["HeapProfiler.stopSampling"] = &DispatcherImpl::stopSampling;
+        }
+        ~DispatcherImpl() override { }
+        DispatchResponse::Status dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) override;
 
-protected:
-    using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
-    using DispatchMap = protocol::HashMap<String, CallHandler>;
-    DispatchMap m_dispatchMap;
+    protected:
+        using CallHandler = DispatchResponse::Status (DispatcherImpl::*)(int callId, std::unique_ptr<DictionaryValue> messageObject, ErrorSupport* errors);
+        using DispatchMap = protocol::HashMap<String, CallHandler>;
+        DispatchMap m_dispatchMap;
 
-    DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status startTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status stopTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status takeHeapSnapshot(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status collectGarbage(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status getObjectByHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status addInspectedHeapObject(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status getHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status startSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
-    DispatchResponse::Status stopSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status startTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status stopTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status takeHeapSnapshot(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status collectGarbage(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status getObjectByHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status addInspectedHeapObject(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status getHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status startSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
+        DispatchResponse::Status stopSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport*);
 
-    Backend* m_backend;
-    bool m_fallThroughForNotFound;
+        Backend* m_backend;
+        bool m_fallThroughForNotFound;
 };
 
-DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject)
-{
+DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& method, std::unique_ptr<protocol::DictionaryValue> messageObject) {
     protocol::HashMap<String, CallHandler>::iterator it = m_dispatchMap.find(method);
     if (it == m_dispatchMap.end()) {
-        if (m_fallThroughForNotFound)
+        if (m_fallThroughForNotFound) {
             return DispatchResponse::kFallThrough;
+        }
         reportProtocolError(callId, DispatchResponse::kMethodNotFound, "'" + method + "' wasn't found", nullptr);
         return DispatchResponse::kError;
     }
@@ -358,28 +346,27 @@ DispatchResponse::Status DispatcherImpl::dispatch(int callId, const String& meth
 }
 
 
-DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::enable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->enable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::disable(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->disable();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::startTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::startTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -397,13 +384,13 @@ DispatchResponse::Status DispatcherImpl::startTrackingHeapObjects(int callId, st
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->startTrackingHeapObjects(std::move(in_trackAllocations));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::stopTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::stopTrackingHeapObjects(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -421,13 +408,13 @@ DispatchResponse::Status DispatcherImpl::stopTrackingHeapObjects(int callId, std
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->stopTrackingHeapObjects(std::move(in_reportProgress));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::takeHeapSnapshot(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::takeHeapSnapshot(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -445,23 +432,23 @@ DispatchResponse::Status DispatcherImpl::takeHeapSnapshot(int callId, std::uniqu
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->takeHeapSnapshot(std::move(in_reportProgress));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::collectGarbage(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::collectGarbage(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->collectGarbage();
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::getObjectByHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::getObjectByHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -484,19 +471,20 @@ DispatchResponse::Status DispatcherImpl::getObjectByHeapObjectId(int callId, std
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->getObjectByHeapObjectId(in_objectId, std::move(in_objectGroup), &out_result);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("result", ValueConversions<protocol::Runtime::RemoteObject>::toValue(out_result.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::addInspectedHeapObject(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::addInspectedHeapObject(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -511,13 +499,13 @@ DispatchResponse::Status DispatcherImpl::addInspectedHeapObject(int callId, std:
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->addInspectedHeapObject(in_heapObjectId);
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::getHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::getHeapObjectId(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -534,19 +522,20 @@ DispatchResponse::Status DispatcherImpl::getHeapObjectId(int callId, std::unique
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->getHeapObjectId(in_objectId, &out_heapSnapshotObjectId);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("heapSnapshotObjectId", ValueConversions<String>::toValue(out_heapSnapshotObjectId));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::startSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::startSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Prepare input parameters.
     protocol::DictionaryValue* object = DictionaryValue::cast(requestMessageObject->get("params"));
     errors->push();
@@ -564,32 +553,33 @@ DispatchResponse::Status DispatcherImpl::startSampling(int callId, std::unique_p
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->startSampling(std::move(in_samplingInterval));
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response);
+    }
     return response.status();
 }
 
-DispatchResponse::Status DispatcherImpl::stopSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors)
-{
+DispatchResponse::Status DispatcherImpl::stopSampling(int callId, std::unique_ptr<DictionaryValue> requestMessageObject, ErrorSupport* errors) {
     // Declare output parameters.
     std::unique_ptr<protocol::HeapProfiler::SamplingHeapProfile> out_profile;
 
     std::unique_ptr<DispatcherBase::WeakPtr> weak = weakPtr();
     DispatchResponse response = m_backend->stopSampling(&out_profile);
-    if (response.status() == DispatchResponse::kFallThrough)
+    if (response.status() == DispatchResponse::kFallThrough) {
         return response.status();
+    }
     std::unique_ptr<protocol::DictionaryValue> result = DictionaryValue::create();
     if (response.status() == DispatchResponse::kSuccess) {
         result->setValue("profile", ValueConversions<protocol::HeapProfiler::SamplingHeapProfile>::toValue(out_profile.get()));
     }
-    if (weak->get())
+    if (weak->get()) {
         weak->get()->sendResponse(callId, response, std::move(result));
+    }
     return response.status();
 }
 
 // static
-void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend)
-{
+void Dispatcher::wire(UberDispatcher* dispatcher, Backend* backend) {
     dispatcher->registerBackend("HeapProfiler", std::unique_ptr<protocol::DispatcherBase>(new DispatcherImpl(dispatcher->channel(), backend, dispatcher->fallThroughForNotFound())));
 }
 
