@@ -47,7 +47,7 @@ def libDir = "$projectDir/../../lib/Android/"
 def flavorNames = new ArrayList<String>()
 def configDir = file(configurationsDir)
 
-def packageJsonContents = [:]
+def packageJsonMap;
 def excludedDevDependencies = ['**/.bin/**']
 
 def dontRunSbg = project.hasProperty("dontRunSbg");
@@ -95,23 +95,6 @@ def renameResultApks (variant) {
 		name = apkNamePrefix + ".apk"
 		output.packageApplication.outputFile = new File(apkDirectory, name);
 	}    
-}
-
-// gets the devDependencies declared in the package.json and excludes them from the build
-task getDevDependencies {
-	doLast {
-		println "$configStage getDevDependencies"
-	
-		String content = new File("$projectDir/../../package.json").getText("UTF-8")
-		def jsonSlurper = new JsonSlurper()
-		def packageJsonMap = jsonSlurper.parseText(content)
-	
-		packageJsonContents = packageJsonMap.devDependencies;
-	
-		packageJsonContents.each { entry ->
-			excludedDevDependencies.add(entry.key + '/platforms/android/**/*.jar')
-		}
-	}
 }
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// CONFIGURATIONS ///////////////////////////////////////
@@ -498,6 +481,35 @@ android {
 	}
 }
 
+task readPackageJson {
+	File packageJsonFile = new File("$projectDir/../../package.json");
+
+	if(packageJsonFile.exists())
+	{
+		def content = packageJsonFile.getText("UTF-8");
+		def jsonSlurper = new JsonSlurper()
+		packageJsonMap = jsonSlurper.parseText(content)
+	}
+}
+
+task setAppIdentifier {
+	def applicationIdentifier;
+
+	println "$configStage setAppIdentifier"
+
+	if(packageJsonMap)
+	{
+		applicationIdentifier = packageJsonMap.nativescript.id;
+
+		if (!(applicationIdentifier instanceof String))
+		{
+			applicationIdentifier = applicationIdentifier.android;
+		}
+
+		android.defaultConfig.applicationId = applicationIdentifier;
+	}
+}
+
 task pluginExtend {
 	description "applies additional configuration"
 
@@ -724,18 +736,20 @@ copyTypings.onlyIf({
 
 task validateAppIdMatch {
 	doLast {
-		def packageJsonFile = new File("$projectDir/../../package.json");
 		def lineSeparator = System.getProperty("line.separator");
 
-		if (packageJsonFile.exists() && !project.hasProperty("release")) {
-			String content = packageJsonFile.getText("UTF-8")
-			def jsonSlurper = new JsonSlurper()
-			def packageJsonMap = jsonSlurper.parseText(content)
+		if (packageJsonMap && !project.hasProperty("release")) {
+			def applicationIdentifier = packageJsonMap.nativescript.id;
 
-			if (packageJsonMap.nativescript.id != android.defaultConfig.applicationId) {
+			if (!(applicationIdentifier instanceof String))
+			{
+				applicationIdentifier = applicationIdentifier.android;
+			}
+
+			if(applicationIdentifier != android.defaultConfig.applicationId) {
 				def errorMessage = "${lineSeparator}WARNING: The Application identifier is different from the one inside 'package.json' file.$lineSeparator" +
 					"NativeScript CLI might not work properly.$lineSeparator" +
-					"Update the application identifier in package.json and app.gradle so that they match.";
+					"Remove applicationId from app.gradle and update the \"nativescript.id\" in package.json as follows {\"ios\": \"\" , \"android\": \"\"}.";
 				logger.error(errorMessage);
 			}
 		}
