@@ -492,21 +492,21 @@ task readPackageJson {
 	}
 }
 
-task setAppIdentifier {
-	def applicationIdentifier;
+def getAppIdentifier (appIdentifier) {
+	if (!(appIdentifier instanceof String))
+	{
+		return appIdentifier.android;
+	}
 
+	return appIdentifier;
+}
+
+task setAppIdentifier {
 	println "$configStage setAppIdentifier"
 
 	if(packageJsonMap)
 	{
-		applicationIdentifier = packageJsonMap.nativescript.id;
-
-		if (!(applicationIdentifier instanceof String))
-		{
-			applicationIdentifier = applicationIdentifier.android;
-		}
-
-		android.defaultConfig.applicationId = applicationIdentifier;
+		android.defaultConfig.applicationId = getAppIdentifier(packageJsonMap.nativescript.id);
 	}
 }
 
@@ -739,14 +739,7 @@ task validateAppIdMatch {
 		def lineSeparator = System.getProperty("line.separator");
 
 		if (packageJsonMap && !project.hasProperty("release")) {
-			def applicationIdentifier = packageJsonMap.nativescript.id;
-
-			if (!(applicationIdentifier instanceof String))
-			{
-				applicationIdentifier = applicationIdentifier.android;
-			}
-
-			if(applicationIdentifier != android.defaultConfig.applicationId) {
+			if(getAppIdentifier(packageJsonMap.nativescript.id) != android.defaultConfig.applicationId) {
 				def errorMessage = "${lineSeparator}WARNING: The Application identifier is different from the one inside 'package.json' file.$lineSeparator" +
 					"NativeScript CLI might not work properly.$lineSeparator" +
 					"Remove applicationId from app.gradle and update the \"nativescript.id\" in package.json as follows {\"ios\": \"\" , \"android\": \"\"}.";
